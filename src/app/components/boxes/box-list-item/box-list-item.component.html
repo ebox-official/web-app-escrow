@@ -1,0 +1,55 @@
+<div class="position-relative p-3 border-bottom pointer" (click)="goToDetails();">
+    <app-loading [id]="box.id"></app-loading>
+    <div class="position-relative">
+        <div>{{ box.timestamp | dateFormatter }}</div>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex gap-2">
+                <div class="align-self-center d-flex">
+                    <ng-container *ngIf="box.mode === ONE_WAY">
+                        <img height="32" [src]="box.sendTokenInfo.thumb" [alt]="box.sendTokenInfo.symbol" onerror="this.src='assets/img/unknown-icon.png'">
+                    </ng-container>
+                    <ng-container *ngIf="box.mode === OTC_TRADE">
+                        <img height="32" [src]="mode === 'incoming' ? box.sendTokenInfo.thumb : box.requestTokenInfo.thumb" [alt]="mode === 'incoming' ? box.sendTokenInfo.symbol : box.requestTokenInfo.symbol" onerror="this.src='assets/img/unknown-icon.png'">
+                        <img height="32" style="margin-left: -12px;" [src]="mode === 'incoming' ? box.requestTokenInfo.thumb : box.sendTokenInfo.thumb" [alt]="mode === 'incoming' ? box.requestTokenInfo.symbol : box.sendTokenInfo.symbol" onerror="this.src='assets/img/unknown-icon.png'">
+                    </ng-container>
+                </div>
+                <div class="d-flex flex-column justify-content-evenly">
+                    <div>
+                        <h5 style="margin-bottom: -4px;">{{
+                            (box.isPrivate ?
+                                "Anonymous" :
+                                mode === "incoming" ?
+                                    box.senderName ?
+                                        box.senderName :
+                                        box.sender :
+                                    box.recipientName ?
+                                        box.recipientName :
+                                        box.recipient
+                            ) | ellipsis: 16
+                        }}</h5>
+                        <ng-container *ngIf="mode === 'incoming' && box.senderName || mode === 'outgoing' && box.recipientName">
+                            <small class="text-muted" style="font-size: .8rem;">{{ (mode === "incoming" ? box.sender : box.recipient) | ellipsis: 24 }}</small>
+                        </ng-container>
+                    </div>
+                    <div class="fw-bold" [ngClass]="{
+                        'text-primary': box.status === PENDING,
+                        'text-muted': box.status === COMPLETE
+                    }">{{ box.status }}</div>
+                </div>
+            </div>
+            <div class="text-end">
+                <div class="text-muted fst-italic" style="margin-bottom: -10px;">{{ mode === "incoming" ? "In" : "Out" }}</div>
+                <div>{{ box.sendValueDecimal | multiplierFormatter }} {{ box.sendTokenInfo.symbol }}</div>
+                <ng-container *ngIf="box.mode === OTC_TRADE">
+                    <div class="text-muted fst-italic" style="margin-bottom: -10px;">{{ mode === "incoming" ? "Out" : "In" }}</div>
+                    <div>{{ box.requestValueDecimal | multiplierFormatter }} {{ box.requestTokenInfo.symbol }}</div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!box.taken" class="text-center mt-2">
+    
+        <button *ngIf="mode === 'outgoing' && box.status === PENDING" class="btn btn-outline-primary px-5" (click)="$event.stopPropagation(); eboxService.cancelBox(box);">cancel transaction</button>
+    
+    </div>
+</div>

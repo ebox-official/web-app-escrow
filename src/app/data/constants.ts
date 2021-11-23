@@ -1,0 +1,12 @@
+let monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dev"];
+
+let ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
+let ZERO = "0";
+let MAX_VALUE = "115792089237316195423570985008687907853269984665640564039457584007913129639935";
+
+export {
+    monthNames,
+    ADDRESS_ZERO,
+    ZERO,
+    MAX_VALUE
+};

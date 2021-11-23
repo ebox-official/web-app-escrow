@@ -1,0 +1,70 @@
+<div #modal class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content h-75">
+            <div class="modal-header">
+                <h5 class="modal-title">tokens</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="p-3 text-center">
+                <button class="mb-3 btn btn-primary" (click)="addToken();">
+                    Add new
+                    <i class="bi bi-plus-circle-fill"></i>
+                </button>
+                <div class="form-floating">
+                    <input #search ngModel type="search" class="form-control" id="contact-search" placeholder="Search">
+                    <label for="contact-search">Search</label>
+                </div>
+            </div>
+            <div class="modal-body">
+
+                <ul class="list-style-none">
+                    <li *ngFor="let t of tokens$ | async | listSearch: search.value; index as i; trackBy: trackByFn" class="d-flex justify-content-between align-items-center pointer"
+                    [ngClass]="{
+                        active: selectedToken?.address === t.address,
+                        'base-token': t.isBase
+                    }"
+                    (click)="selectedToken = t;">
+
+                        <!-- logo -->
+                        <div class="token-logo d-flex justify-content-center align-items-center">
+                            <ng-container *ngIf="t.isCustom else curatedIcon">
+                                <i class="bi bi-journal-bookmark-fill"></i>
+                            </ng-container>
+                            <ng-template #curatedIcon>
+                                <img height="24" [src]="t.thumb" [alt]="t.name + ' logo'" onerror="this.src='assets/img/unknown-icon.png'">
+                            </ng-template>
+                        </div>
+                        <!-- /logo -->
+
+                        <div class="ms-2 me-auto overflow-hidden">
+                            <div class="fw-bold text-truncate">
+                                <span class="text-uppercase">{{ t.symbol }}</span>
+                                <span class="ms-2">{{ t.name }}</span>
+                            </div>
+
+                            <!-- address -->
+                            <ng-container *ngIf="t.isBase else nonBaseToken">
+                                Base token
+                            </ng-container>
+                            <ng-template #nonBaseToken>
+                                <app-copyable-plaintext class="copyable-address mt-1" [value]="t.address" size="sm"></app-copyable-plaintext>
+                            </ng-template>
+                            <!-- /address -->
+                            
+                        </div>
+
+                        <div *ngIf="t.isCustom" class="p-2 interactive-icon" (click)="deleteToken($event, t);">
+                            <i class="bi bi-trash-fill"></i>
+                        </div>
+
+                    </li>
+                </ul>
+
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" (click)="confirmToken()"
+                    [disabled]="!selectedToken">confirm</button>
+            </div>
+        </div>
+    </div>
+</div>

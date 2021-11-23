@@ -1,0 +1,162 @@
+<div class="box-details-component-card-header card-header">
+    <div class="d-none d-md-block mb-3">
+        <h4 class="card-title">box details</h4>
+        <small class="card-text text-muted">A box you've {{ mode === "incoming" ? "received" : "sent" }}.</small>
+    </div>
+    <a class="link-unstyled ms-auto ctrl-arrow-sx" routerLink="..">Back to {{ mode }}</a>
+</div>
+
+<div class="box-details-component-card-body card-body position-relative">
+    <ng-container *ngIf="box else loading">
+
+        <app-loading [id]="box.id"></app-loading>
+
+        <div class="d-flex flex-column gap-3" *ngIf="connection.networkInfo() as netInfo">
+            {{ box.timestamp | dateFormatter}}
+
+            <!-- token icons -->
+            <div class="d-flex justify-content-evenly align-items-center">
+                <div style="width: 100px;" class="d-flex flex-column gap-2 align-items-center">
+                    <div class="fw-bold">{{ mode === "incoming" ? "In amount" : "Out amount" }}</div>
+                    <img height="32" [src]="box.sendTokenInfo.thumb" [alt]="box.sendTokenInfo.symbol" onerror="this.src='assets/img/unknown-icon.png'">
+                    <div>{{ box.sendValueDecimal | multiplierFormatter }} {{ box.sendTokenInfo.symbol }}</div>
+                </div>
+                <div class="fst-italic" *ngIf="box.mode === OTC_TRADE">for</div>
+                <div style="width: 100px;" class="d-flex flex-column gap-2 align-items-center" *ngIf="box.mode === OTC_TRADE">
+                    <div class="fw-bold">{{ mode === "incoming" ? "Out amount" : "In amount" }}</div>
+                    <img height="32" [src]="box.requestTokenInfo.thumb" [alt]="box.requestTokenInfo.symbol" onerror="this.src='assets/img/unknown-icon.png'">
+                    <div>{{ box.requestValueDecimal | multiplierFormatter }} {{ box.requestTokenInfo.symbol }}</div>
+                </div>
+            </div>
+            <!-- /token icons -->
+
+            <!-- status -->
+            <div class="fs-4 fw-bold text-center" [ngClass]="{
+                'text-primary': box.status === PENDING,
+                'text-muted': box.status === COMPLETE
+            }">
+                {{ box.status }}
+            </div>
+            <!-- /status -->
+
+            <!-- amount 1 -->
+            <div>
+                <div>
+                    <div class="fw-bold">
+                        {{ mode === "incoming" ? box.status === COMPLETE ? "Received" : "Receive" : box.status === COMPLETE ? "Given" : "Give" }} exactly
+                    </div>
+                    <div class="fs-4" style="margin-bottom: -8px;">
+                        {{ box.sendValueDecimal | currencyFormatter }} {{ box.sendTokenInfo.symbol }}
+                    </div>
+                </div>
+
+                <!-- address -->
+                <ng-container *ngIf="box.sendTokenInfo.isBase else nonBaseToken">
+                    Base token
+                </ng-container>
+                <ng-template #nonBaseToken>
+                    <small>
+                        <a [href]="netInfo.accountScannerUrl(box.sendTokenInfo.address)" target="_blank">
+                            <i class="bi bi-box-arrow-up-right"></i>
+                            {{ box.sendTokenInfo.address }}
+                        </a>
+                    </small>
+                </ng-template>
+                <!-- /address -->
+
+            </div>
+            <!-- /amount -->
+
+            <!-- amount 2 -->
+            <div *ngIf="box.mode === OTC_TRADE">
+                <div>
+                    <div class="fw-bold">
+                        {{ mode === "incoming" ? box.status === COMPLETE ? "Given" : "Give" : box.status === COMPLETE ? "Received" : "Receive" }} exactly
+                    </div>
+                    <div class="fs-4" style="margin-bottom: -8px;">
+                        {{ box.requestValueDecimal | currencyFormatter }} {{ box.requestTokenInfo.symbol }}
+                    </div>
+                </div>
+
+                <!-- address -->
+                <ng-container *ngIf="box.requestTokenInfo.isBase else nonBaseToken">
+                    Base token
+                </ng-container>
+                <ng-template #nonBaseToken>
+                    <small>
+                        <a [href]="netInfo.accountScannerUrl(box.requestTokenInfo.address)" target="_blank">
+                            <i class="bi bi-box-arrow-up-right"></i>
+                            {{ box.requestTokenInfo.address }}
+                        </a>
+                    </small>
+                </ng-template>
+                <!-- /address -->
+
+            </div>
+            <!-- /amount 2 -->
+
+            <!-- sender|recipient -->
+            <div>
+                <div>
+                    <div class="fw-bold">
+                        {{ mode === "incoming" ? "Sender" : "Recipient" }}
+                    </div>
+                    <div *ngIf="box.isPrivate || mode === 'incoming' ? box.senderName : box.recipientName" class="fs-4" style="margin-bottom: -8px;">
+                        {{ (box.isPrivate ?
+                            "Anonymous" :
+                            mode === "incoming" ?
+                                box.senderName :
+                                box.recipientName
+                        ) }}
+                    </div>
+                </div>
+                <small>
+                    <a *ngIf="!box.isPrivate" [href]="netInfo.accountScannerUrl(mode === 'incoming' ? box.sender : box.recipient)" target="_blank">
+                        <i class="bi bi-box-arrow-up-right"></i>
+                        {{ mode === "incoming" ? box.sender : box.recipient }}
+                    </a>
+                </small>
+            </div>
+            <!-- /sender|recipient -->
+
+            <!-- scammer alert -->
+            <div *ngIf="mode === 'incoming' && box.status === PENDING && box.mode === OTC_TRADE" class="mb-0 alert alert-danger" role="alert">
+                Be aware of scammers!<br>Make sure to check the token addresses are correct.
+            </div>
+            <!-- /scammer alert -->
+
+            <!-- interactions -->
+            <div *ngIf="box.status === PENDING" class="text-center my-3">
+
+                <!-- unbox -->
+                <ng-container *ngIf="mode === 'incoming'">
+                    <div *ngIf="box.passHashHash" class="input-group">
+                        <button class="btn btn-primary" type="button" [disabled]="eboxService.doubleHash(passphrase.value) !== box.passHashHash" (click)="unbox(passphrase.value);">unbox</button>
+                        <button type="button" style="right: .2rem; z-index: 9;" class="position-absolute top-50 translate-middle-y btn btn-dark btn-sm rounded-circle" appPasswordToggler [myToggleTarget]="passphrase"><i class="bi bi-eye-fill"></i></button>
+                        <input #passphrase type="password" class="form-control" placeholder="Enter passphrase to unbox" [disabled]="eboxService.doubleHash(passphrase.value) === box.passHashHash">
+                    </div>
+                </ng-container>
+                <!-- /unbox -->
+    
+                <!-- cancel -->
+                <button *ngIf="mode === 'outgoing'" class="btn btn-primary px-5" (click)="$event.stopPropagation(); eboxService.cancelBox(box);">cancel transaction</button>
+                <!-- /cancel -->
+
+            </div>
+            <!-- /interactions -->
+
+        </div>
+    </ng-container>
+    <ng-template #loading>
+        <ng-container *ngIf="box === undefined else notFound">
+            Loading box...
+        </ng-container>
+        <ng-template #notFound>
+            Box not found.
+        </ng-template>
+    </ng-template>
+</div>
+
+<div class="box-details-component-card-footer card-footer text-muted">
+    <app-connection-info></app-connection-info>
+</div>

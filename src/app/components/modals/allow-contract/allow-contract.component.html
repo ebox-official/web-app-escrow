@@ -1,0 +1,22 @@
+<div #modal class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Allowance</h5>
+                <button type="button" class="btn-close" (click)="cancel();" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                You haven't given ebox the permission to trade this token:
+                <div *ngIf="data?.token as tokenInfo" class="my-4 d-flex flex-column gap-2 align-items-center">
+                    <img height="32" [src]="tokenInfo.thumb" [alt]="tokenInfo.symbol" onerror="this.src='assets/img/unknown-icon.png'">
+                    <div>{{ tokenInfo.name }} <span class="fw-bold">{{ tokenInfo.symbol }}</span></div>
+                </div>
+                In order to continue with the trade you'll have to grant ebox the permission.<br>You'll be notified once the allowance has been granted.
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-outline-secondary" (click)="cancel();">cancel</button>
+                <button type="button" class="btn btn-danger" (click)="allow();">grant</button>
+            </div>
+        </div>
+    </div>
+</div>

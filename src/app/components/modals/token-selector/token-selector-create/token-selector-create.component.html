@@ -1,0 +1,23 @@
+<div #modal class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">add token</h5>
+                <button type="button" class="btn-close" aria-label="Close" (click)="dismiss();"></button>
+            </div>
+            <div class="modal-body">
+
+                <form id="add-token-form" class="d-grid gap-3" (submit)="$event.preventDefault(); addToken($event);" ngNativeValidate>
+                    <label class="form-label">
+                        <span>Address</span>
+                        <input type="text" class="form-control" name="address" required pattern="^0x[a-fA-F0-9]{40}$">
+                    </label>
+                </form>
+
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="submit" form="add-token-form" class="btn btn-primary">confirm</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+.wallet-badges {
+    display: grid;
+    grid-gap: 12px;
+}
+
+@media (min-width: 576px) {
+    .wallet-badges {
+        grid-template-columns: 100%;
+    }
+}
+
+@media (min-width: 768px) {
+    .wallet-badges {
+        grid-template-columns: 50% 50%;
+    }
+}
+
+@media (min-width: 992px) {
+    .content {
+        margin-top: 150px;
+    }
+
+    .wallet-badges {
+        grid-template-columns: 30% 30%;
+    }
+}
+
+@media (min-width: 1200px) {
+    .wallet-badges {
+        grid-template-columns: 25% 25%;
+    }
+}
+
+@media (min-width: 1400px) {
+    .wallet-badges {
+        grid-template-columns: 20% 20%;
+    }
+}

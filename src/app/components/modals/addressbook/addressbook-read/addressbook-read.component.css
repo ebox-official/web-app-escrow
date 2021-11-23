@@ -1,0 +1,32 @@
+ul {
+    padding: 0;
+}
+
+li {
+    padding: .5rem 1rem;
+    border-radius: .975rem;
+}
+
+li.active {
+    color: var(--bs-white);
+    background-color: var(--bs-secondary);
+}
+
+.interactive-icon {
+    transform: rotateZ(0deg);
+    transition: transform .3s ease;
+}
+
+.interactive-icon:hover {
+    transform: rotateZ(15deg);
+}
+
+@media (max-width: 767px) {
+    .modal-body {
+        padding: 0;
+    }
+
+    li.active {
+        border-radius: 0;
+    }
+}

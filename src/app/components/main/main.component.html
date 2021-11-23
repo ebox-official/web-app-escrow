@@ -1,0 +1,26 @@
+<nav class="main-component-nav">
+    <a class="bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['send']">send</a>
+    <a class="bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['otc']">otc trade</a>
+
+    <!-- visible only after md -->
+    <a class="d-none d-md-inline bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['transactions']">my transactions</a>
+    <a class="d-none d-md-inline bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['staking']">staking</a>
+    <a class="d-none d-md-inline bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['governance']">governance</a>
+    <!-- /visible only after md -->
+
+    <!-- visible only before md -->
+    <a class="d-md-none bg-body border link-unstyled" href="#" role="button" id="my-dropup" data-bs-toggle="dropdown" aria-expanded="false" routerLinkActive="active" [class.active]="rla.isActive">
+        <i class="bi bi-three-dots"></i>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="my-dropup" data-popper-placement="top-start" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate(0px, -40px);">
+        <li><h6 class="dropdown-header">Other</h6></li>
+        <a class="dropdown-item" routerLinkActive="active" #rla="routerLinkActive" [routerLink]="['transactions']">my transactions</a>
+        <li><a class="dropdown-item" routerLinkActive="active" [routerLink]="['staking']">staking</a></li>
+        <li><a class="dropdown-item" routerLinkActive="active" [routerLink]="['governance']">governance</a></li>
+    </ul>
+    <!-- /visible only before md -->
+
+</nav>
+<div class="main-component-card card">
+    <router-outlet></router-outlet>
+</div>

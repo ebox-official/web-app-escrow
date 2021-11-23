@@ -1,0 +1,177 @@
+:root {
+  --bs-body-rgb-alt: var(--bs-body-bg-rgb-alt); /* Fix Bootstrap-Nightshade missing variable */
+}
+
+body {
+  min-height: 100vh;
+}
+
+.link-unstyled, .link-unstyled:link, .link-unstyled:hover {
+  color: inherit!important;
+  text-decoration: inherit!important;
+}
+
+.ctrl-arrow-rx, .ctrl-arrow-sx {
+  display: inline-flex;
+  align-items: center;
+  font-weight: bold;
+}
+
+.ctrl-arrow-rx::after, .ctrl-arrow-sx::before {
+  line-height: 0;
+  content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%28127,127,127,1%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+  transition: transform .35s ease;
+  transform-origin: 0.5em 50%;
+}
+
+.ctrl-arrow-rx[aria-expanded="true"]::after {
+  transform: rotate(90deg);
+}
+
+.ctrl-arrow-sx::before {
+  transform: rotate(-180deg);
+}
+
+.ctrl-arrow-sx[aria-expanded="true"]::before {
+  transform: rotate(-270deg);
+}
+
+.password-visible {
+  outline: 2px solid #f42!important;
+}
+
+.pointer {
+  cursor: pointer;
+  user-select: none;
+}
+
+.btn-important {
+  box-shadow: 0 5px 10px #0002;
+  transition: all .3s ease;
+}
+
+.btn-important:focus {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 0.25rem rgb(255 100 0 / 25%);
+}
+
+/*** backgrounds
+ *    ██████╗  ██████╗ ███████╗
+ *    ██╔══██╗██╔════╝ ██╔════╝
+ *    ██████╔╝██║  ███╗███████╗
+ *    ██╔══██╗██║   ██║╚════██║
+ *    ██████╔╝╚██████╔╝███████║
+ *    ╚═════╝  ╚═════╝ ╚══════╝
+ *                             
+ */
+.ebox-logo {
+  background-image: url("../src/assets/img/ebox-logo.svg");
+}
+
+html.dark .ebox-logo {
+  background-image: url("../src/assets/img/ebox-logo-dark.svg");
+}
+
+.main-router-outlet-wrapper {
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  transition: background-image .3s ease;
+}
+
+.default-bg {
+  background-image: url("../src/assets/img/default-bg.svg");
+}
+html.dark .default-bg {
+  background-image: url("../src/assets/img/default-bg-dark.svg");
+}
+
+.login-bg {
+  background-image: url("../src/assets/img/login-bg.svg");
+  /* background: url("../src/assets/img/login-bg.svg") no-repeat center/cover fixed,
+              linear-gradient(45deg, #fff, #c7c7c7); */
+}
+html.dark .login-bg {
+  background-image: url("../src/assets/img/login-bg-dark.svg");
+  /* background: url("../src/assets/img/login-bg-dark.svg") no-repeat center/cover fixed,
+              linear-gradient(45deg, #000, #373737); */
+}
+
+.skeletonized:empty {
+  margin: auto;
+  width: 100%;
+  height: 42rem; /* TODO: put it to 21rem */
+  background-image: 
+    linear-gradient(100deg, #0000, var(--bs-body-bg) 50%, #0000 80%),
+    linear-gradient(lightgray 1rem, transparent 0),
+    linear-gradient(lightgray 1rem, transparent 0),
+    linear-gradient(lightgray 1rem, transparent 0);
+  background-repeat: repeat-y;
+  background-size: 2rem 1rem, /* highlight */ 30% 7rem, 60% 7rem, 90% 7rem;
+  background-position: 1rem 1rem, /* highlight */ 1rem 1rem, 1rem 3rem, 1rem 5rem;
+  animation: ShineSkeleton 1s infinite;
+}
+
+html.dark .skeletonized:empty {
+  background-image: 
+    linear-gradient(100deg, #0000, var(--bs-body-bg-alt) 50%, #0000 80%),
+    linear-gradient(lightgray 1rem, transparent 0),
+    linear-gradient(lightgray 1rem, transparent 0),
+    linear-gradient(lightgray 1rem, transparent 0);
+}
+
+@keyframes ShineSkeleton {
+  to {
+    background-position: 100% 1rem, /* move highlight to right */ 1rem 1rem, 1rem 3rem, 1rem 5rem;
+  }
+}
+
+/*** bootstrap
+ *    ██████╗ ███████╗
+ *    ██╔══██╗██╔════╝
+ *    ██████╔╝███████╗
+ *    ██╔══██╗╚════██║
+ *    ██████╔╝███████║
+ *    ╚═════╝ ╚══════╝
+ *                    
+ */
+body.modal-open {
+  overflow: hidden;
+}
+
+.form-label {
+  font-weight: bolder;
+}
+
+.btn-primary, .btn-secondary {
+  color: var(--bs-white);
+}
+
+/*** scrollbar
+ *    ███████╗ ██████╗██████╗  ██████╗ ██╗     ██╗     ██████╗  █████╗ ██████╗ 
+ *    ██╔════╝██╔════╝██╔══██╗██╔═══██╗██║     ██║     ██╔══██╗██╔══██╗██╔══██╗
+ *    ███████╗██║     ██████╔╝██║   ██║██║     ██║     ██████╔╝███████║██████╔╝
+ *    ╚════██║██║     ██╔══██╗██║   ██║██║     ██║     ██╔══██╗██╔══██║██╔══██╗
+ *    ███████║╚██████╗██║  ██║╚██████╔╝███████╗███████╗██████╔╝██║  ██║██║  ██║
+ *    ╚══════╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+ *                                                                             
+ */
+::-webkit-scrollbar-track, html.dark ::-webkit-scrollbar-track {
+  box-shadow: inset -1px 0 .3em #fff3,
+              inset 1px 0 .3em #0003;
+}
+html.dark ::-webkit-scrollbar-track, html.dark ::-webkit-scrollbar-track {
+  background-color: var(--bs-body-bg-alt);
+}
+
+::-webkit-scrollbar {
+	width: 8px;
+  background-color: var(--bs-body-bg);
+}
+html.dark ::-webkit-scrollbar {
+  background-color: var(--bs-body-bg-alt);
+}
+
+::-webkit-scrollbar-thumb, html.dark ::-webkit-scrollbar-thumb {
+  background-color: var(--bs-primary);
+}

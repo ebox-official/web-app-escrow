@@ -1,0 +1,24 @@
+<div class="my-transactions-component-card-header card-header pb-0">
+    <div class="d-none d-md-block mb-3">
+        <h4 class="card-title">my transactions</h4>
+        <small class="card-text text-muted">View all of your transaction right here.</small>
+    </div>
+    <ul class="nav nav-tabs border-bottom-0">
+        <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['incoming']">Incoming</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['outgoing']">Outgoing</a>
+        </li>
+
+        <a class="link-unstyled ms-auto ctrl-arrow-rx" href="#filters-offcanvas" data-bs-toggle="offcanvas" [class.filters-active]="filtersService.touched">Filters</a>
+    </ul>
+</div>
+
+<div class="my-transactions-component-card-body position-relative card-body p-0">
+    <router-outlet></router-outlet>
+</div>
+
+<div class="my-transactions-component-card-footer card-footer text-muted">
+    <app-connection-info></app-connection-info>
+</div>

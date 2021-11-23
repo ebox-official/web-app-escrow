@@ -1,0 +1,31 @@
+<div #modal class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">update contacts</h5>
+                <button type="button" class="btn-close" aria-label="Close" (click)="dismiss();"></button>
+            </div>
+            <div class="modal-body">
+
+                <form id="update-contact-form" class="d-grid gap-3" (submit)="$event.preventDefault(); updateContact($event, data);" ngNativeValidate>
+                    <label class="form-label">
+                        <span>Label</span>
+                        <input type="text" class="form-control" name="label" [value]="data.label" required minlength="2" maxlength="20">
+                    </label>
+                    <label class="form-label">
+                        <span>Address</span>
+                        <input type="text" class="form-control" name="address" [value]="data.address" required pattern="^0x[a-fA-F0-9]{40}$">
+                    </label>
+                    <label class="form-label">
+                        <span>Default Passphrase</span>
+                        <input type="text" class="form-control" name="passphrase" [value]="data.passphrase">
+                    </label>
+                </form>
+
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="submit" form="update-contact-form" class="btn btn-primary">confirm</button>
+            </div>
+        </div>
+    </div>
+</div>

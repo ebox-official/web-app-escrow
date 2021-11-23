@@ -1,0 +1,43 @@
+<div class="content p-3 ps-lg-5">
+    <div class="p-3 ps-lg-5">
+        <h1 class="display-4 fw-bolder">
+            To start using ebox
+            <div>
+                <span class="text-primary">connect you wallet</span> first!
+            </div>
+        </h1>
+        <p class="mb-5 fs-4">Start sending and receiving tokens through ebox.</p>
+        <p class="lead fw-bolder">Select your wallet</p>
+        <div class="wallet-badges">
+            
+            <button class="position-relative btn btn-important bg-body d-flex align-items-center" style="border-radius: 3rem;">
+                <div class="p-1">
+                    <img height="48" src="../../../assets/img/walletconnect.svg" alt="walletconnect logo">
+                </div>
+                <div class="position-absolute w-100">WalletConnect</div>
+            </button>
+
+            <button class="position-relative btn btn-important bg-body d-flex align-items-center" style="border-radius: 3rem;" (click)="connect('BINANCE_CHAIN');">
+                <div class="p-1">
+                    <img height="48" src="../../../assets/img/binance.svg" alt="binance chain wallet logo">
+                </div>
+                <div class="position-absolute w-100">Binance Chain Wallet</div>
+            </button>
+
+            <button class="position-relative btn btn-important bg-body d-flex align-items-center" style="border-radius: 3rem;" (click)="connect('METAMASK');">
+                <div class="p-1">
+                    <img height="48" src="../../../assets/img/metamask.svg" alt="metamask wallet logo">
+                </div>
+                <div class="position-absolute w-100">MetaMask Wallet</div>
+            </button>
+
+            <button class="position-relative btn btn-important bg-body d-flex align-items-center" style="border-radius: 3rem;">
+                <div class="p-1">
+                    <img height="48" src="../../../assets/img/coinbase.svg" alt="coinbase wallet logo">
+                </div>
+                <div class="position-absolute w-100">Coinbase</div>
+            </button>
+
+        </div>
+    </div>
+</div>

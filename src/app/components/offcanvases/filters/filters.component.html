@@ -1,0 +1,109 @@
+<div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="filters-offcanvas">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Filters</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <p>Here you can tweak filters for your transactions.</p>
+
+        <form #form class="d-flex flex-column gap-3" (submit)="$event.preventDefault(); apply();">
+
+            <!-- Sort by -->
+            <button type="button" class="ctrl-arrow-rx btn justify-content-between collapsed" data-bs-toggle="collapse" data-bs-target="#sort-by-collapse">Sort by</button>
+            <div class="ps-3 collapse" id="sort-by-collapse">
+                <fieldset class="d-flex flex-column gap-3">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="radio" name="sortBy" value="dateAsc" class="form-check-input" #defaultSortBy checked>
+                            Date ascending
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="radio" name="sortBy" value="dateDesc" class="form-check-input">
+                            Date discending
+                        </label>
+                    </div>
+                </fieldset>
+            </div>
+            <!-- /Sort by -->
+
+            <!-- Status -->
+            <button type="button" class="ctrl-arrow-rx btn justify-content-between collapsed" data-bs-toggle="collapse" data-bs-target="#status-collapse">Status</button>
+            <div class="ps-3 collapse" id="status-collapse">
+                <fieldset class="d-flex flex-column gap-3">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            Pending
+                            <input type="checkbox" #status1 [name]="PENDING" class="form-check-input" checked>
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            Completed
+                            <input type="checkbox" #status2 [name]="COMPLETE" class="form-check-input" checked>
+                        </label>
+                    </div>
+                </fieldset>
+            </div>
+            <!-- /Status -->
+
+            <!-- Type -->
+            <button type="button" class="ctrl-arrow-rx btn justify-content-between collapsed" data-bs-toggle="collapse" data-bs-target="#type-collapse">Type</button>
+            <div class="ps-3 collapse" id="type-collapse">
+                <fieldset class="d-flex flex-column gap-3">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            One way
+                            <input type="checkbox" #type1 [name]="ONE_WAY" class="form-check-input" checked>
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            Otc trade
+                            <input type="checkbox" #type2 [name]="OTC_TRADE" class="form-check-input" checked>
+                        </label>
+                    </div>
+                </fieldset>
+            </div>
+            <!-- Type -->
+
+            <!-- Sent token -->
+            <button type="button" class="ctrl-arrow-rx btn justify-content-between collapsed" data-bs-toggle="collapse" data-bs-target="#send-token-collapse">Sent token</button>
+            <div class="ps-3 collapse" id="send-token-collapse">
+                <p>
+                    <small class="text-muted">You can choose multiple tokens</small>
+                </p>
+                <button type="button" class="btn btn-outline-primary" (click)="spawnTokenSelector('send');">Choose token</button>
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <span class="badge rounded-pill bg-light text-dark pointer" *ngFor="let t of filterDict.sendTokenInfo;" (click)="removeToken('send', t);">
+                        <img height="24" [src]="t.thumb" [alt]="t.symbol" onerror="this.src='assets/img/unknown-icon.png'"> {{ t.symbol }} <i class="bi bi-x"></i>
+                    </span>
+                </div>
+            </div>
+            <!-- /Sent token -->
+
+            <!-- Requested token -->
+            <button type="button" class="ctrl-arrow-rx btn justify-content-between collapsed" data-bs-toggle="collapse" data-bs-target="#request-token-collapse">Requested token</button>
+            <div class="ps-3 collapse" id="request-token-collapse">
+                <p>
+                    <small class="text-muted">You can choose multiple tokens</small>
+                </p>
+                <button type="button" class="btn btn-outline-primary" (click)="spawnTokenSelector('request');">Choose token</button>
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <span class="badge rounded-pill bg-light text-dark pointer" *ngFor="let t of filterDict.requestTokenInfo;" (click)="removeToken('request', t);">
+                        <img height="24" [src]="t.thumb" [alt]="t.symbol" onerror="this.src='assets/img/unknown-icon.png'"> {{ t.symbol }} <i class="bi bi-x"></i>
+                    </span>
+                </div>
+            </div>
+            <!-- /Requested token -->
+
+            <div class="d-flex flex-column gap-2">
+                <button type="submit" class="btn btn-primary">Apply</button>
+                <button type="button" class="btn btn-outline-primary" (click)="reset();">Reset</button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
