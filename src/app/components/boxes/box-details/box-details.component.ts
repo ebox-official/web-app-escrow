@@ -17,6 +17,7 @@ export class BoxDetailsComponent implements OnInit {
   PENDING = PENDING;
   COMPLETE = COMPLETE;
 
+  locationHref = window.location.href;
   mode;
   box;
 

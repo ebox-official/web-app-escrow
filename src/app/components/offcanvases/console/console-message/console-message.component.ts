@@ -3,7 +3,7 @@ import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/cor
 @Component({
   selector: 'app-console-message',
   template: `
-    <div #shell class="mb-2 p-2 border">
+    <div #shell class="mb-2 p-2 border text-break">
       <small class="text-muted">{{ consoleMessage.timestamp | dateFormatter }}</small>
       <p #message class="mb-0 font-monospace">{{ consoleMessage.message }}</p>
     </div>

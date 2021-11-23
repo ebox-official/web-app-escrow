@@ -117,6 +117,10 @@ export class ConnectionService {
     }
   }
 
+  checksumAddress(address: string): string {
+    return this.ethers.utils.getAddress(address);
+  }
+
   // Check if the given address is valid
   isAddressValid(address: string): boolean {
     return this.ethers.utils.isAddress(address);

@@ -30,8 +30,9 @@ export class TokenSelectorCreateComponent implements OnInit, AfterViewInit {
   async addToken(evt) {
     let { address } = formToObject(evt.target);
     let result = await this.tokenSelectorService.create(address);
-    if (!result) return;
-    this.dismiss();
+    if (result) {
+      this.dismiss();
+    }
   }
 
   async dismiss() {

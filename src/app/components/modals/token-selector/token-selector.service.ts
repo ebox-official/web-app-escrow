@@ -48,7 +48,7 @@ export class TokenSelectorService {
   async getTokenInfo(address: string): Promise<Token> {
 
     let result: Token = {
-      address,
+      address: this.connection.checksumAddress(address),
       name: undefined,
       symbol: undefined,
       decimals: undefined,

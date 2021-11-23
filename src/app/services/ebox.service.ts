@@ -356,10 +356,6 @@ export class EboxService {
         color: "danger",
         message: "Cancelling aborted."
       });
-      this.consoleService.addMessage({
-        color: "danger",
-        message: "Box cancelling aborted."
-      });
 
       this.loadingService.off(box.id);
       throw err;
@@ -375,7 +371,16 @@ export class EboxService {
       message: `Waiting for transaction to confirm (tx hash: ${tx.hash}).`
     });
 
-    let receipt = await tx.wait();
+    let receipt;
+    try {
+      receipt = await tx.wait();
+    }
+    catch (err) {
+      let errTxt = "Something went wrong."
+      this.toasterService.addToaster({ color: "danger", message: errTxt });
+      this.consoleService.addMessage({ color: "danger", message: err });
+      throw err;
+    }
 
     // Transaction confirmed
     this.toasterService.addToaster({
@@ -411,9 +416,8 @@ export class EboxService {
         let balanceDecimal = this.connection.
           weiToDecimal(balanceWei, box.requestTokenInfo.decimals);
         
-        let errTxt = `Not enough ${box.requestTokenInfo.symbol} to complete the trade. (Balance is ${balanceDecimal} ${box.requestTokenInfo.symbol}.`;
+        let errTxt = `Not enough ${box.requestTokenInfo.symbol} to complete the trade. (Balance is ${balanceDecimal} ${box.requestTokenInfo.symbol}.)`;
         this.toasterService.addToaster({ color: "danger", message: errTxt });
-        this.consoleService.addMessage({ color: "danger", message: errTxt });
         throw new Error(errTxt);
       }
 
@@ -479,10 +483,6 @@ export class EboxService {
         color: "danger",
         message: "Unbox aborted."
       });
-      this.consoleService.addMessage({
-        color: "danger",
-        message: "Unbox aborted."
-      });
 
       this.loadingService.off(box.id);
       throw err;
@@ -498,7 +498,16 @@ export class EboxService {
       message: `Waiting for transaction to confirm (tx hash: ${tx.hash}).`
     });
 
-    let receipt = await tx.wait();
+    let receipt;
+    try {
+      receipt = await tx.wait();
+    }
+    catch (err) {
+      let errTxt = "Something went wrong."
+      this.toasterService.addToaster({ color: "danger", message: errTxt });
+      this.consoleService.addMessage({ color: "danger", message: err });
+      throw err;
+    }
 
     // Transaction confirmed
     this.toasterService.addToaster({
@@ -530,9 +539,21 @@ export class EboxService {
       sendTokenInfo.decimals
     );
 
+    // Check send value
+    if (sendValueWei.gte(MAX_VALUE)) {
+      let errTxt = "Send value is too high.";
+      this.toasterService.addToaster({ color: "danger", message: errTxt });
+      throw new Error(errTxt);
+    }
+    if (sendValueWei.lte(ZERO)) {
+      let errTxt = "Send value is too low.";
+      this.toasterService.addToaster({ color: "danger", message: errTxt });
+      throw new Error(errTxt);
+    }
+
     // Define default values for request token (used when mode is one way)
     let requestTokenInfo = await this.tokenSelector.getTokenInfo(ADDRESS_ZERO);
-    let requestValueWei = BigNumber.from("0");
+    let requestValueWei = BigNumber.from(ZERO);
 
     // If otc trade, then get request token info and request value in wei
     if (boxInputs.mode === OTC_TRADE) {
@@ -541,6 +562,18 @@ export class EboxService {
         boxInputs.requestValueDecimal,
         requestTokenInfo.decimals
       );
+
+      // Check request value
+      if (requestValueWei.gte(MAX_VALUE)) {
+        let errTxt = "Request value is too high.";
+        this.toasterService.addToaster({ color: "danger", message: errTxt });
+        throw new Error(errTxt);
+      }
+      if (requestValueWei.lte(ZERO)) {
+        let errTxt = "Request value is too low.";
+        this.toasterService.addToaster({ color: "danger", message: errTxt });
+        throw new Error(errTxt);
+      }
     }
 
     // Check balance (If the amount sent is more than the user balance, then notify the user with a toast and stop here.)
@@ -553,7 +586,6 @@ export class EboxService {
       
       let errTxt = `Trying to send more ${sendTokenInfo.symbol} than disposable. (Sending ${boxInputs.sendValueDecimal}, having ${balanceDecimal}.)`;
       this.toasterService.addToaster({ color: "danger", message: errTxt });
-      this.consoleService.addMessage({ color: "danger", message: errTxt });
       throw new Error(errTxt);
     }
 
@@ -631,10 +663,6 @@ export class EboxService {
         color: "danger",
         message: "Sending aborted."
       });
-      this.consoleService.addMessage({
-        color: "danger",
-        message: "Box creation aborted."
-      });
 
       this.loadingService.off(boxInputs.mode);
       throw err;
@@ -650,7 +678,16 @@ export class EboxService {
       message: `Waiting for transaction to confirm (tx hash: ${tx.hash}).`
     });
 
-    let receipt = await tx.wait();
+    let receipt;
+    try {
+      receipt = await tx.wait();
+    }
+    catch (err) {
+      let errTxt = "Something went wrong."
+      this.toasterService.addToaster({ color: "danger", message: errTxt });
+      this.consoleService.addMessage({ color: "danger", message: err });
+      throw err;
+    }
 
     // Transaction confirmed
     this.toasterService.addToaster({

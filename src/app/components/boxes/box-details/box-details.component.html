@@ -17,13 +17,29 @@
             <!-- token icons -->
             <div class="d-flex justify-content-evenly align-items-center">
                 <div style="width: 100px;" class="d-flex flex-column gap-2 align-items-center">
-                    <div class="fw-bold">{{ mode === "incoming" ? "In amount" : "Out amount" }}</div>
+                    <div class="fw-bold">{{
+                        mode === "incoming" ?
+                            box.status === COMPLETE ?
+                                "Received" :
+                                "Receive" :
+                            box.status === COMPLETE ?
+                                "Given"
+                                : "Give"
+                    }}</div>
                     <img height="32" [src]="box.sendTokenInfo.thumb" [alt]="box.sendTokenInfo.symbol" onerror="this.src='assets/img/unknown-icon.png'">
                     <div>{{ box.sendValueDecimal | multiplierFormatter }} {{ box.sendTokenInfo.symbol }}</div>
                 </div>
                 <div class="fst-italic" *ngIf="box.mode === OTC_TRADE">for</div>
                 <div style="width: 100px;" class="d-flex flex-column gap-2 align-items-center" *ngIf="box.mode === OTC_TRADE">
-                    <div class="fw-bold">{{ mode === "incoming" ? "Out amount" : "In amount" }}</div>
+                    <div class="fw-bold">{{
+                        mode === "incoming" ?
+                            box.status === COMPLETE ?
+                                "Given" :
+                                "Give" :
+                            box.status === COMPLETE ?
+                                "Received"
+                                : "Receive"
+                    }}</div>
                     <img height="32" [src]="box.requestTokenInfo.thumb" [alt]="box.requestTokenInfo.symbol" onerror="this.src='assets/img/unknown-icon.png'">
                     <div>{{ box.requestValueDecimal | multiplierFormatter }} {{ box.requestTokenInfo.symbol }}</div>
                 </div>
@@ -39,11 +55,29 @@
             </div>
             <!-- /status -->
 
+            <!-- share link -->
+            <div *ngIf="mode === 'outgoing'">
+                <app-copyable-plaintext
+                    size="sm"
+                    [value]="locationHref.replace('outgoing', 'incoming')"
+                    mask="Copy link for the recipient"
+                ></app-copyable-plaintext>
+            </div>
+            <!-- /share link -->
+
             <!-- amount 1 -->
             <div>
                 <div>
                     <div class="fw-bold">
-                        {{ mode === "incoming" ? box.status === COMPLETE ? "Received" : "Receive" : box.status === COMPLETE ? "Given" : "Give" }} exactly
+                        {{
+                            mode === "incoming" ?
+                                box.status === COMPLETE ?
+                                    "Received" :
+                                    "Receive" :
+                                box.status === COMPLETE ?
+                                    "Given" :
+                                "Give"
+                        }} exactly
                     </div>
                     <div class="fs-4" style="margin-bottom: -8px;">
                         {{ box.sendValueDecimal | currencyFormatter }} {{ box.sendTokenInfo.symbol }}
@@ -71,7 +105,15 @@
             <div *ngIf="box.mode === OTC_TRADE">
                 <div>
                     <div class="fw-bold">
-                        {{ mode === "incoming" ? box.status === COMPLETE ? "Given" : "Give" : box.status === COMPLETE ? "Received" : "Receive" }} exactly
+                        {{
+                            mode === "incoming" ?
+                                box.status === COMPLETE ?
+                                    "Given" :
+                                    "Give" :
+                                box.status === COMPLETE ?
+                                    "Received" :
+                                    "Receive"
+                        }} exactly
                     </div>
                     <div class="fs-4" style="margin-bottom: -8px;">
                         {{ box.requestValueDecimal | currencyFormatter }} {{ box.requestTokenInfo.symbol }}
