@@ -24,7 +24,7 @@ export class EboxService {
   boxes_incoming$ = new BehaviorSubject(null);
   boxes_outgoing$ = new BehaviorSubject(null);
 
-  private dappContractAddress; 
+  private dappContractAddress;
   private dappContract;
 
   private stakingContractAddress;
@@ -120,11 +120,34 @@ export class EboxService {
     });
   }
 
+
+
+
+
+  private reset() {
+
+    clearTimeout(this.boxesTimer);
+    // TODO: remove next from boxes$
+
+    this.dappContractAddress = null;
+    this.dappContract = null;
+
+    this.stakingContractAddress = null;
+    this.stakingContract = null;
+
+    this.tokenDispenserContractAddress = null;
+    this.tokenDispenserContract = null;
+  }
+
+
+
+
+
   // Get wei allowance
   // Read only query
-  async getTokenAllowance(address: string): Promise<BigNumber|string> {
+  async getTokenAllowance(address: string): Promise<BigNumber | string> {
 
-    if (address == ADDRESS_ZERO) { 
+    if (address == ADDRESS_ZERO) {
       return MAX_VALUE; // If it's the base token, then allowance is unlimited
     }
     let provider = this.connection.provider$.getValue();
@@ -132,6 +155,10 @@ export class EboxService {
     let contract = new this.connection.ethers.Contract(address, ERC20_ABI, provider);
     return await contract.allowance(selectedAccount, this.dappContractAddress);
   }
+
+
+
+
 
   // Get wei balance
   // Read only query
@@ -147,34 +174,26 @@ export class EboxService {
     return await contract.balanceOf(selectedAccount);
   }
 
-  // Check if the given address is syntatically valid
-  isValidAddress(address: string): boolean {
-    return this.connection.ethers.utils.isAddress(address);
-  }
 
-  private reset() {
 
-    clearTimeout(this.boxesTimer);
-    // TODO: remove next from boxes$
 
-    this.dappContractAddress = null; 
-    this.dappContract = null;
-
-    this.stakingContractAddress = null;
-    this.stakingContract = null;
-
-    this.tokenDispenserContractAddress = null;
-    this.tokenDispenserContract = null;
-  }
 
   private hash(string) {
     return Web3Utils.soliditySha3(string);
   }
 
+
+
+
+
   doubleHash(string) {
     return this.hash(this.hash(string));
   }
 
+
+
+
+  // Set up the loop for fetching boxes from the blockchain
   private setBoxesTimer() {
 
     let loop = async () => {
@@ -186,6 +205,10 @@ export class EboxService {
     // Call the above immediately
     if (!this.boxesTimer) loop();
   }
+
+
+
+
 
   // From BlockchainBox to AppBox
   private async transformBox({ box, index }) {
@@ -207,7 +230,7 @@ export class EboxService {
     };
 
     // Set mode
-    if (box.requestToken === undefined || box.requestValue.toString() ===  "0") {
+    if (box.requestToken === undefined || box.requestValue.toString() === "0") {
       result.mode = ONE_WAY;
     }
     else {
@@ -230,22 +253,26 @@ export class EboxService {
       weiToDecimal(box.sendValue, result.sendTokenInfo.decimals);
 
     // Set request token stuff
-    if (box.requestToken !== undefined && box.requestValue.toString() !==  "0") {
+    if (box.requestToken !== undefined && box.requestValue.toString() !== "0") {
       result.requestTokenInfo = await this.tokenSelector.getTokenInfo(box.requestToken);
       result.requestValueWei = box.requestValue,
-      result.requestValueDecimal = this.connection.
-        weiToDecimal(box.requestValue, result.requestTokenInfo.decimals);
+        result.requestValueDecimal = this.connection.
+          weiToDecimal(box.requestValue, result.requestTokenInfo.decimals);
     }
-    
+
     return result;
   }
+
+
+
+
 
   // Read only query
   async emitBoxesIn(): Promise<void> {
 
     let selectedAccount = this.connection.selectedAccount$.getValue();
 
-    let [ indices, privacyIndices ] = await Promise.all([
+    let [indices, privacyIndices] = await Promise.all([
       this.dappContract.getBoxesIncoming(),
       this.dappContract.getBoxesIncomingWithPrivacy()
     ]);
@@ -280,7 +307,7 @@ export class EboxService {
     }
 
     // Filter out all boxes user has sent to him/her-self
-    boxes = boxes.filter(b => 
+    boxes = boxes.filter(b =>
       b.box.senderHash ?
         b.box.senderHash !== this.hash(selectedAccount) :
         b.box.sender !== selectedAccount
@@ -292,10 +319,14 @@ export class EboxService {
     this.boxes_incoming$.next(boxes);
   }
 
+
+
+
+
   // Read only query
   async emitBoxesOut(): Promise<void> {
 
-    let [ indices, privacyIndices ] = await Promise.all([
+    let [indices, privacyIndices] = await Promise.all([
       this.dappContract.getBoxesOutgoing(),
       this.dappContract.getBoxesOutgoingWithPrivacy()
     ]);
@@ -335,6 +366,10 @@ export class EboxService {
     this.boxes_outgoing$.next(boxes);
   }
 
+
+
+
+
   // Cancel a box
   // State changing operation
   async cancelBox(box: AppBox): Promise<void> {
@@ -356,41 +391,22 @@ export class EboxService {
         color: "danger",
         message: "Cancelling aborted."
       });
-
       this.loadingService.off(box.id);
       throw err;
     }
 
-    // Waiting for transaction confirmation
-    this.toasterService.addToaster({
-      color: "info",
-      message: "Waiting for transaction to confirm (may take a while, depending on network load)..."
-    });
-    this.consoleService.addMessage({
-      color: "info",
-      message: `Waiting for transaction to confirm (tx hash: ${tx.hash}).`
-    });
+    this.notifyWaitTx(tx);
 
     let receipt;
     try {
       receipt = await tx.wait();
     }
     catch (err) {
-      let errTxt = "Something went wrong."
-      this.toasterService.addToaster({ color: "danger", message: errTxt });
-      this.consoleService.addMessage({ color: "danger", message: err });
+      this.notifyErrorTx(err);
       throw err;
     }
 
-    // Transaction confirmed
-    this.toasterService.addToaster({
-      color: "success",
-      message: "Cancelling transaction successful!"
-    });
-    this.consoleService.addMessage({
-      color: "success",
-      message: `Box cancellation confirmed (gas used: ${receipt.gasUsed}, tx hash: ${receipt.transactionHash}).`
-    });
+    this.notifyConfirmTx("Cancelling transaction successful!", receipt);
 
     this.loadingService.off(box.id);
 
@@ -398,12 +414,16 @@ export class EboxService {
     return receipt;
   }
 
+
+
+
+
   // Accept a box (TODO: finish this)
   // State changing operation
   async acceptBox(box: AppBox, passphrase: string): Promise<void> {
 
     // Amount of base token transacted during this operation
-    let baseWei: string|BigNumber = ZERO;
+    let baseWei: string | BigNumber = ZERO;
 
     // If it's an trade request, then do some checks
     if (box.mode === OTC_TRADE) {
@@ -415,7 +435,7 @@ export class EboxService {
         // Get balance in decimal format to show it to the user
         let balanceDecimal = this.connection.
           weiToDecimal(balanceWei, box.requestTokenInfo.decimals);
-        
+
         let errTxt = `Not enough ${box.requestTokenInfo.symbol} to complete the trade. (Balance is ${balanceDecimal} ${box.requestTokenInfo.symbol}.)`;
         this.toasterService.addToaster({ color: "danger", message: errTxt });
         throw new Error(errTxt);
@@ -427,31 +447,31 @@ export class EboxService {
         // If allowance is not enough, then try to set unlimited spending
         let allowanceWei = await this.getTokenAllowance(box.requestTokenInfo.address);
         if (box.requestValueWei.gt(allowanceWei)) {
-  
+
           // Turn on the loading indicator for the give box and open a modal to request the allowance
           this.loadingService.on(box.id);
           let allow = await this.ms.openWithPromise(
             this.ms.modals.ALLOW_CONTRACT,
             { token: box.requestTokenInfo }
           );
-  
+
           // If the user allowed, then send an approve unlimited request to the provider
           if (allow) {
             try {
               await this.approveUnlimitedSpending(box.requestTokenInfo.address);
             }
             catch (err) {
-  
+
               // User has rejected the request from the provider
               this.loadingService.off(box.id);
               throw err;
             }
-  
+
             // Approve unlimited went through
             this.loadingService.off(box.id);
           }
           else {
-  
+
             // User has rejected the request from the app
             this.loadingService.off(box.id);
             throw new Error("User rejected approve unlimited spending.");
@@ -483,41 +503,22 @@ export class EboxService {
         color: "danger",
         message: "Unbox aborted."
       });
-
       this.loadingService.off(box.id);
       throw err;
     }
 
-    // Waiting for transaction confirmation
-    this.toasterService.addToaster({
-      color: "info",
-      message: "Waiting for transaction to confirm (may take a while, depending on network load)..."
-    });
-    this.consoleService.addMessage({
-      color: "info",
-      message: `Waiting for transaction to confirm (tx hash: ${tx.hash}).`
-    });
+    this.notifyWaitTx(tx);
 
     let receipt;
     try {
       receipt = await tx.wait();
     }
     catch (err) {
-      let errTxt = "Something went wrong."
-      this.toasterService.addToaster({ color: "danger", message: errTxt });
-      this.consoleService.addMessage({ color: "danger", message: err });
+      this.notifyErrorTx(err);
       throw err;
     }
 
-    // Transaction confirmed
-    this.toasterService.addToaster({
-      color: "success",
-      message: "Unboxed successfully!"
-    });
-    this.consoleService.addMessage({
-      color: "success",
-      message: `Unbox confirmed (gas used: ${receipt.gasUsed}, tx hash: ${receipt.transactionHash})`
-    });
+    this.notifyConfirmTx("Unboxed successfully!", receipt);
 
     this.loadingService.off(box.id);
 
@@ -525,13 +526,17 @@ export class EboxService {
     return receipt;
   }
 
+
+
+
+
   // Make a box
   // State changing operation
   async createBox(boxInputs: BoxInputs): Promise<void> {
 
     // Amount of base token transacted during this operation
-    let baseWei: string|BigNumber = ZERO;
-    
+    let baseWei: string | BigNumber = ZERO;
+
     // Get send token info and send value in wei
     let sendTokenInfo = await this.tokenSelector.getTokenInfo(boxInputs.sendToken);
     let sendValueWei = await this.connection.decimalToWei(
@@ -583,7 +588,7 @@ export class EboxService {
       // Get balance in decimal format to show it to the user
       let balanceDecimal = this.connection.
         weiToDecimal(balanceWei, sendTokenInfo.decimals);
-      
+
       let errTxt = `Trying to send more ${sendTokenInfo.symbol} than disposable. (Sending ${boxInputs.sendValueDecimal}, having ${balanceDecimal}.)`;
       this.toasterService.addToaster({ color: "danger", message: errTxt });
       throw new Error(errTxt);
@@ -663,47 +668,73 @@ export class EboxService {
         color: "danger",
         message: "Sending aborted."
       });
-
       this.loadingService.off(boxInputs.mode);
       throw err;
     }
 
-    // Waiting for transaction confirmation
-    this.toasterService.addToaster({
-      color: "info",
-      message: "Waiting for transaction to confirm (may take a while, depending on network load)..."
-    });
-    this.consoleService.addMessage({
-      color: "info",
-      message: `Waiting for transaction to confirm (tx hash: ${tx.hash}).`
-    });
+    this.notifyWaitTx(tx);
 
     let receipt;
     try {
       receipt = await tx.wait();
     }
     catch (err) {
-      let errTxt = "Something went wrong."
-      this.toasterService.addToaster({ color: "danger", message: errTxt });
-      this.consoleService.addMessage({ color: "danger", message: err });
+      this.notifyErrorTx(err);
       throw err;
     }
 
-    // Transaction confirmed
-    this.toasterService.addToaster({
-      color: "success",
-      message: "Your outgoing transaction has been confirmed!"
-    });
-    this.consoleService.addMessage({
-      color: "success",
-      message: `Box creation confirmed (gas used: ${receipt.gasUsed}, tx hash: ${receipt.transactionHash})`
-    });
+    this.notifyConfirmTx("Your outgoing transaction has been confirmed!", receipt);
 
     this.loadingService.off(boxInputs.mode);
 
     // Return receipt to the consumer
     return receipt;
   }
+
+
+
+
+
+  // Give the user 100 of the selected test token
+  // State changing operation
+  async giveTestToken(tokenSymbol: string, tokenIndex: number) {
+
+    // Making of the transaction
+    let tx;
+    try {
+      tx = await this.tokenDispenserContract.giveToken(
+        tokenIndex,
+        this.connection.decimalToWei("100", 18)
+      );
+    }
+    catch (err) {
+      this.toasterService.addToaster({
+        color: "danger",
+        message: "Token dispending aborted by user."
+      });
+      throw err;
+    }
+
+    this.notifyWaitTx(tx);
+
+    let receipt;
+    try {
+      receipt = await tx.wait();
+    }
+    catch (err) {
+      this.notifyErrorTx(err);
+      throw err;
+    }
+
+    this.notifyConfirmTx(`You have received 100 ${tokenSymbol} tokens!`, receipt);
+
+    // Return receipt to the consumer
+    return receipt;
+  }
+
+
+
+
 
   // Approve unlimited spending for the given address
   // State changing operation
@@ -723,38 +754,63 @@ export class EboxService {
         color: "danger",
         message: "Token approval aborted by user."
       });
-      this.consoleService.addMessage({
-        color: "danger",
-        message: `Approval for unlimited allowance of ${tokenAddress} aborted`
-      });
-
       throw err;
     }
 
-    // Waiting for transaction confirmation
-    this.toasterService.addToaster({
-      color: "info",
-      message: "Waiting for transaction to confirm (may take a while, depending on network load)..."
-    });
-    this.consoleService.addMessage({
-      color: "info",
-      message: `Waiting for transaction to confirm (tx hash: ${tx.hash}).`
-    });
+    this.notifyWaitTx(tx);
 
-    let receipt = await tx.wait();
+    let receipt;
+    try {
+      receipt = await tx.wait();
+    }
+    catch (err) {
+      this.notifyErrorTx(err);
+      throw err;
+    }
 
-    // Transaction confirmed
-    this.toasterService.addToaster({
-      color: "success",
-      message: "Approval successful – You can now send / trade this token!"
-    });
-    this.consoleService.addMessage({
-      color: "success",
-      message: `Successfully approved unlimited allowance of ${tokenAddress} (gas used: ${receipt.gasUsed}, tx hash: ${receipt.transactionHash})`
-    });
+    this.notifyConfirmTx(`Successfully approved allowance of ${tokenAddress}!`, receipt);
 
     // Return receipt to the consumer
     return receipt;
+  }
+
+
+
+
+
+  // Show the user an info toast that the dapp is waiting for transaction confirmation
+  private notifyWaitTx(tx) {
+    this.toasterService.addToaster({
+      color: "info",
+      message: "Waiting for transaction to confirm. (May take a while, depending on network load.)"
+    });
+    this.consoleService.addMessage({
+      color: "info",
+      message: `Waiting for transaction to confirm. (Tx hash: ${tx.hash}.)`
+    });
+  }
+
+
+
+
+
+  // Show the user a danger toast that the dapp is waiting for transaction confirmation
+  private notifyErrorTx(err) {
+    this.toasterService.addToaster({ color: "danger", message: "Something went wrong. (See the console to know more.)" });
+    this.consoleService.addMessage({ color: "danger", message: err });
+  }
+
+
+
+
+
+  // Show the user a success toast that the transaction has been confirmed
+  private notifyConfirmTx(message: string, receipt) {
+    this.toasterService.addToaster({ color: "success", message });
+    this.consoleService.addMessage({
+      color: "success",
+      message: `"${message}" (Gas used: ${receipt.gasUsed}, tx hash: ${receipt.transactionHash}.)`
+    });
   }
 
 }

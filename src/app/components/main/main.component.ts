@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ConnectionService } from 'src/app/services/connection/connection.service';
+import { EboxService } from 'src/app/services/ebox.service';
 
 @Component({
   selector: 'app-main',
@@ -7,9 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    public eboxService: EboxService,
+    private connection: ConnectionService
+  ) { }
 
   ngOnInit(): void {
+  }
+
+  isTestnet(): boolean {
+    return /testnet/i.test(this.connection.networkInfo()?.name);
   }
 
 }

@@ -22,9 +22,14 @@
     box-shadow: 0 -5px 10px #0001;
 }
 
-.main-component-nav a {
+.main-component-nav > a {
     text-align: center;
     padding: 1rem 0;
+}
+
+.main-component-nav ul a,
+.main-component-nav ul button {
+    padding: 1rem;
 }
 
 .main-component-nav a.active {
@@ -58,10 +63,17 @@
         box-shadow: none;
     }
 
-    .main-component-nav a {
+    .main-component-nav a,
+    .main-component-nav button {
         border-radius: 1.2rem;
         padding: .5rem 1rem;
         box-shadow: 0 5px 10px #0002;
+        transition: all .3s ease;
+    }
+
+    .main-component-nav button:focus {
+        transform: translateY(2px);
+        box-shadow: 0 2px 5px #0004;
     }
 
     .main-component-card {
