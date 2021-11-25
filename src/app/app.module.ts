@@ -40,6 +40,9 @@ import { NetworkNotSupportedComponent } from './components/network-not-supported
 import { PasswordTogglerDirective } from './directives/password-toggler.directive';
 import { CurrencyFormatterPipe } from './pipes/currency-formatter.pipe';
 import { AllowContractComponent } from './components/modals/allow-contract/allow-contract.component';
+import { StakingComponent } from './components/staking/staking.component';
+import { GovernanceComponent } from './components/governance/governance.component';
+import { BsTooltipDirective } from './directives/bs-tooltip.directive';
 
 @NgModule({
   declarations: [
@@ -80,6 +83,9 @@ import { AllowContractComponent } from './components/modals/allow-contract/allow
     PasswordTogglerDirective,
     CurrencyFormatterPipe,
     AllowContractComponent,
+    StakingComponent,
+    GovernanceComponent,
+    BsTooltipDirective,
   ],
   imports: [
     BrowserModule,

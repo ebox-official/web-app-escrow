@@ -10,6 +10,8 @@ import { BoxesComponent } from './components/boxes/boxes.component';
 import { BoxDetailsComponent } from './components/boxes/box-details/box-details.component';
 import { AuthGuard } from './guards/auth.guard';
 import { ONE_WAY, OTC_TRADE } from './components/boxes/box';
+import { StakingComponent } from './components/staking/staking.component';
+import { GovernanceComponent } from './components/governance/governance.component';
 
 const routes: Routes = [
   {
@@ -71,6 +73,31 @@ const routes: Routes = [
         path: "transactions/outgoing/:boxId",
         component: BoxDetailsComponent,
         data: { mode: "outgoing" },
+      },
+      {
+        path: "staking",
+        component: StakingComponent,
+      },
+      {
+        path: "governance",
+        component: GovernanceComponent,
+        children: [
+          {
+            path: "",
+            redirectTo: "incoming",
+            pathMatch: "full"
+          },
+          {
+            path: "incoming",
+            component: BoxesComponent,
+            data: { mode: "incoming" },
+          },
+          {
+            path: "outgoing",
+            component: BoxesComponent,
+            data: { mode: "outgoing" },
+          },
+        ]
       },
       {
         path: "**",

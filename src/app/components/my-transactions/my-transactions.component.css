@@ -8,17 +8,3 @@
 .filters-active {
     color: var(--bs-primary)!important
 }
-
-.my-transactions-component-card-body {
-    overflow-y: auto;
-}
-
-@media (max-width: 767px) {
-    .my-transactions-component-card-header {
-        border-radius: 0;
-    }
-
-    .my-transactions-component-card-footer {
-        border-radius: 0;
-    }
-}

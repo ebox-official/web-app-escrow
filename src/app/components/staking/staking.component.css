@@ -1,0 +1,16 @@
+:host {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+label[for="net-switch"].active {
+    color: var(--bs-primary);
+}
+
+.custom-switch:checked,
+html.dark .custom-switch:checked {
+    background-color: var(--bs-dark)!important;
+    border-color: rgba(255, 255, 255, .25)!important;
+}

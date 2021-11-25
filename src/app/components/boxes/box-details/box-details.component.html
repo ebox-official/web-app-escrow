@@ -168,7 +168,7 @@
             <!-- /scammer alert -->
 
             <!-- interactions -->
-            <div *ngIf="box.status === PENDING" class="text-center my-3">
+            <div *ngIf="box.status === PENDING" class="d-grid my-3">
 
                 <!-- unbox -->
                 <ng-container *ngIf="mode === 'incoming'">
@@ -181,7 +181,7 @@
                 <!-- /unbox -->
     
                 <!-- cancel -->
-                <button *ngIf="mode === 'outgoing'" class="btn btn-primary px-5" (click)="$event.stopPropagation(); eboxService.cancelBox(box);">cancel transaction</button>
+                <button *ngIf="mode === 'outgoing'" class="btn btn-primary" (click)="$event.stopPropagation(); eboxService.cancelBox(box);">cancel transaction</button>
                 <!-- /cancel -->
 
             </div>

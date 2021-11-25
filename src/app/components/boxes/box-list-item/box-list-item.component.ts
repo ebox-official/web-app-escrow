@@ -22,8 +22,7 @@ export class BoxListItemComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
-    public eboxService: EboxService
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
