@@ -3,7 +3,9 @@
         <h4 class="card-title">box details</h4>
         <small class="card-text text-muted">A box you've {{ mode === "incoming" ? "received" : "sent" }}.</small>
     </div>
-    <a class="link-unstyled ms-auto ctrl-arrow-sx" routerLink="..">Back to {{ mode }}</a>
+    <a class="link-unstyled ms-auto ctrl-arrow-sx" routerLink="..">
+        Back {{ mode }}
+    </a>
 </div>
 
 <div class="custom-card-body card-body position-relative">

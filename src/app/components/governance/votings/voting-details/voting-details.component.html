@@ -1,9 +1,11 @@
 <div class="custom-card-header card-header">
     <div class="d-none d-md-block mb-3">
         <h4 class="card-title">voting details</h4>
-        <small class="card-text text-muted">Voice your opinion in this {{mode}}-related voting.</small>
+        <small class="card-text text-muted">Voice your opinion in this {{ mode }}-related voting!</small>
     </div>
-    <a class="link-unstyled ms-auto ctrl-arrow-sx" routerLink="..">Back to {{ mode }}</a>
+    <a class="link-unstyled ms-auto ctrl-arrow-sx" routerLink="..">
+        Back {{ mode }}
+    </a>
 </div>
 
 <div class="custom-card-body card-body position-relative d-flex flex-column gap-4">
@@ -43,7 +45,7 @@
                       <label class="form-check-label" [for]="'radio' + i">{{ a.answer }}</label>
                     </div>
                     <div class="progress">
-                        <div class="progress-bar" role="progressbar" aria-valuenow="32" aria-valuemin="0" aria-valuemax="100">32%</div>
+                        <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">50%</div>
                     </div>
                 </div>
             </div>

@@ -27,8 +27,9 @@ export class VotingDetailsComponent implements OnInit {
       this.updateNow();
     }, 1000);
 
+    this.mode = this.route.snapshot.data.mode;
     let votingId = this.route.snapshot.paramMap.get("votingId");
-    let votings = await this.governanceService.getVotings(this.route.snapshot.data.mode);
+    let votings = await this.governanceService.getVotings(this.mode);
     this.voting = votings.find(voting => voting.n === votingId);
     console.log(this.voting);
   }
