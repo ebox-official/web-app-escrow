@@ -14,7 +14,9 @@ export interface Voting {
     results_verified: string;
 }
 
+export let NOT_STARTED = "Not started";
 export let LIVE = "Live";
 export let FINISHED = "Finished";
+
 export let PROJECT = "Project";
 export let COMMUNITY = "Community";

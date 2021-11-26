@@ -39,20 +39,20 @@
             <label class="fw-bold">Answers</label>
 
             <div class="d-flex flex-column gap-2">
-                <div *ngFor="let a of voting.answers; i as index;">
+                <div *ngFor="let answer of voting.answers; i as index;">
                     <div class="form-check">
-                      <input type="radio" name="radios" class="form-check-input" [id]="'radio' + i">
-                      <label class="form-check-label" [for]="'radio' + i">{{ a.answer }}</label>
+                      <input type="radio" [name]="'radios-voting-' + voting.n" class="form-check-input" [id]="'radio' + i" [disabled]="disabled ? 'disabled' : ''">
+                      <label class="form-check-label" [for]="'radio' + i">{{ answer.answer }}</label>
                     </div>
                     <div class="progress">
-                        <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">50%</div>
+                        <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" [style.width.%]="answer.percentage">{{ answer.percentage + '%' }}</div>
                     </div>
                 </div>
             </div>
 
         </fieldset>
 
-        <button class="btn btn-primary">Vote</button>
+        <button class="btn btn-primary" [disabled]="disabled ? 'disabled' : ''">Vote</button>
 
     </ng-container>
     <ng-template #loading>

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { COMMUNITY, FINISHED, LIVE, Voting } from './votings/voting';
+import { ConnectionService } from 'src/app/services/connection/connection.service';
+import { COMMUNITY, FINISHED, LIVE, NOT_STARTED, Voting } from './votings/voting';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,7 @@ export class GovernanceService {
 
   private endpoint = "https://www.ebox.io/gov/voting.php";
 
-  constructor() { }
+  constructor(private connection: ConnectionService) { }
 
   getUTCTime(now: Date) {
     let utc = new Date(now. getTime() + now. getTimezoneOffset() * 60000)
@@ -31,103 +32,106 @@ export class GovernanceService {
       voting.time_start = this.getUTCTime(new Date(voting.time_start * 1000));
       voting.time_end = this.getUTCTime(new Date(voting.time_end * 1000));
       voting.mode = mode;
-      voting.status = voting.time_end < this.getUTCTime(new Date()) ?
-        FINISHED :
-        LIVE;
+      if (this.getUTCTime(new Date()) > voting.time_start && this.getUTCTime(new Date()) < voting.time_end) {
+        voting.status = LIVE;
+      }
+      else if (this.getUTCTime(new Date()) < voting.time_start) {
+        voting.status = NOT_STARTED;
+      }
+      else {
+        voting.status = FINISHED;
+      }
       voting.answers = JSON.parse(voting.answers);
     });
 
     return data.reverse();
   }
 
-  // async isEligible(options) {
+  async getVotes(votingNumber: string, mode: string) {
 
-  //   let formData = new FormData();
-  //   formData.append('action', 'is_eligible');
-  //   formData.append('voting', options.votingNumber);
-  //   formData.append('address', this.contractServ.selectedAccount$.getValue());
+    let payload = new FormData();
+    payload.append("action", "get_votes");
+    payload.append("voting", votingNumber);
 
-  //   if (options.isCommunity) {
-  //     formData.append('community', '1');
-  //   }
+    if (mode === COMMUNITY) {
+      payload.append("community", "1");
+    }
 
-  //   let response = await fetch(this.endpoint, { method: 'POST', body: formData });
-  //   let { result: isEligible } = await response.json();
-  //   return isEligible;
-  // }
+    let response = await fetch(this.endpoint, { method: "POST", body: payload });
+    let json = await response.json();
 
-  // async hasVoted(options) {
+    if (json.error === "Results not verified yet") {
+      return { sum: null, votes: null };
+    }
 
-  //   let formData = new FormData();
-  //   formData.append('action', 'has_voted');
-  //   formData.append('voting', options.votingNumber);
-  //   formData.append('address', this.contractServ.selectedAccount$.getValue());
+    let votes = json.data;
+    return {
+      sum: votes.reduce((a, b) => a + b.answer, 0),
+      votes
+    };
+  }
 
-  //   if (options.isCommunity) {
-  //     formData.append('community', '1');
-  //   }
+  async isEligible(votingNumber: string, mode: string): Promise<boolean> {
 
-  //   let response = await fetch(this.endpoint, { method: 'POST', body: formData });
-  //   let { result: hasVoted } = await response.json();
-  //   return hasVoted;
-  // }
+    let payload = new FormData();
+    payload.append("action", "is_eligible");
+    payload.append("voting", votingNumber);
+    payload.append("address", this.connection.selectedAccount$.getValue());
 
-  // async getVotes(options) {
+    if (mode === COMMUNITY) {
+      payload.append("community", "1");
+    }
 
-  //   let formData = new FormData();
-  //   formData.append('action', 'get_votes');
-  //   formData.append('voting', options.votingNumber);
+    let response = await fetch(this.endpoint, { method: "POST", body: payload });
+    let { result } = await response.json();
+    return result;
+  }
 
-  //   if (options.isCommunity) {
-  //     formData.append('community', '1');
-  //   }
+  async hasVoted(votingNumber: string, mode: string): Promise<boolean> {
 
-  //   // I can't standardize the response into a type unless we standardize our BE API, therefore I have to cheat with : "any" in order to access it's properties without TS complaining about it
-  //   let response: any = await fetch(this.endpoint, { method: 'POST', body: formData });
-  //   let json = await response.json();
+    let payload = new FormData();
+    payload.append("action", "has_voted");
+    payload.append("voting", votingNumber);
+    payload.append("address", this.connection.selectedAccount$.getValue());
 
-  //   // Be careful, those votings that haven't yet started have a the following payload: {"error":"Results not verified yet"}
-  //   if (json.error === "Results not verified yet") {
-  //     return { sum: null, votes: null };
-  //   }
+    if (mode === COMMUNITY) {
+      payload.append("community", "1");
+    }
 
-  //   let votes = json.data;
-  //   return {
-  //     sum: votes.reduce((a, b) => a + b.answer, 0),
-  //     votes
-  //   };
-  // }
+    let response = await fetch(this.endpoint, { method: "POST", body: payload });
+    let { result } = await response.json();
+    return result;
+  }
 
-  // async getVoters(options) {
+  async getVotingDetails(votingNumber: string, mode: string) {
 
-  //   let formData = new FormData();
-  //   formData.append('action', 'get_voters');
-  //   formData.append('voting', options.votingNumber);
+    let payload = new FormData();
+    payload.append("action", "get_votes_detail");
+    payload.append("voting", votingNumber);
 
-  //   if (options.isCommunity) {
-  //     formData.append('community', '1');
-  //   }
+    if (mode === COMMUNITY) {
+      payload.append("community", "1");
+    }
 
-  //   let response = await fetch(this.endpoint, { method: 'POST', body: formData });
-  //   let { data: eligibleUsers } = await response.json();
-  //   return eligibleUsers
-  //     .sort((a, b) => b.voting_power - a.voting_power);
-  // }
+    let response = await fetch(this.endpoint, { method: "POST", body: payload });
+    let { data } = await response.json();
+    return data;
+  }
 
-  // async getVotesDetails(options) {
+  async getVoters(votingNumber: string, mode: string) {
 
-  //   let formData = new FormData();
-  //   formData.append('action', 'get_votes_detail');
-  //   formData.append('voting', options.votingNumber);
+    let payload = new FormData();
+    payload.append("action", "get_voters");
+    payload.append("voting", votingNumber);
 
-  //   if (options.isCommunity) {
-  //     formData.append('community', '1');
-  //   }
+    if (mode === COMMUNITY) {
+      payload.append("community", "1");
+    }
 
-  //   let response = await fetch(this.endpoint, { method: 'POST', body: formData });
-  //   let { data: votesDetail } = await response.json();
-  //   return votesDetail;
-  // }
+    let response = await fetch(this.endpoint, { method: "POST", body: payload });
+    let { data } = await response.json();
+    return data.sort((a, b) => b.voting_power - a.voting_power);
+  }
 
   // async vote(proposal, selectedChoice) {
 
