@@ -30,11 +30,11 @@ import { MainComponent } from './components/main/main.component';
 import { InvisibleInputDirective } from './directives/invisible-input.directive';
 import { CustomValidationMessageDirective } from './directives/custom-validation-message.directive';
 import { MyTransactionsComponent } from './components/my-transactions/my-transactions.component';
-import { BoxesComponent } from './components/boxes/boxes.component';
-import { BoxListItemComponent } from './components/boxes/box-list-item/box-list-item.component';
+import { BoxesComponent } from './components/my-transactions/boxes/boxes.component';
+import { BoxListItemComponent } from './components/my-transactions/boxes/box-list-item/box-list-item.component';
 import { FiltersComponent } from './components/offcanvases/filters/filters.component';
 import { EllipsisPipe } from './pipes/ellipsis.pipe';
-import { BoxDetailsComponent } from './components/boxes/box-details/box-details.component';
+import { BoxDetailsComponent } from './components/my-transactions/boxes/box-details/box-details.component';
 import { ConnectionInfoComponent } from './components/connection-info/connection-info.component';
 import { NetworkNotSupportedComponent } from './components/network-not-supported/network-not-supported.component';
 import { PasswordTogglerDirective } from './directives/password-toggler.directive';
@@ -42,7 +42,10 @@ import { CurrencyFormatterPipe } from './pipes/currency-formatter.pipe';
 import { AllowContractComponent } from './components/modals/allow-contract/allow-contract.component';
 import { StakingComponent } from './components/staking/staking.component';
 import { GovernanceComponent } from './components/governance/governance.component';
+import { VotingsComponent } from './components/governance/votings/votings.component';
+import { VotingListItemComponent } from './components/governance/votings/voting-list-item/voting-list-item.component';
 import { BsTooltipDirective } from './directives/bs-tooltip.directive';
+import { VotingDetailsComponent } from './components/governance/votings/voting-details/voting-details.component';
 
 @NgModule({
   declarations: [
@@ -85,6 +88,9 @@ import { BsTooltipDirective } from './directives/bs-tooltip.directive';
     AllowContractComponent,
     StakingComponent,
     GovernanceComponent,
+    VotingsComponent,
+    VotingListItemComponent,
+    VotingDetailsComponent,
     BsTooltipDirective,
   ],
   imports: [

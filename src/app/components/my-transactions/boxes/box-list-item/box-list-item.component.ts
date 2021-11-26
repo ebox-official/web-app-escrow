@@ -17,8 +17,6 @@ export class BoxListItemComponent implements OnInit {
 
   @Input("box") box;
   @Input("mode") mode;
-  
-  @ViewChild("passphrase") passphraseRef;
 
   constructor(
     private router: Router,

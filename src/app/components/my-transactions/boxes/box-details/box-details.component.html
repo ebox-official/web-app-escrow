@@ -1,4 +1,4 @@
-<div class="box-details-component-card-header card-header">
+<div class="custom-card-header card-header">
     <div class="d-none d-md-block mb-3">
         <h4 class="card-title">box details</h4>
         <small class="card-text text-muted">A box you've {{ mode === "incoming" ? "received" : "sent" }}.</small>
@@ -6,7 +6,7 @@
     <a class="link-unstyled ms-auto ctrl-arrow-sx" routerLink="..">Back to {{ mode }}</a>
 </div>
 
-<div class="box-details-component-card-body card-body position-relative">
+<div class="custom-card-body card-body position-relative">
     <ng-container *ngIf="box else loading">
 
         <app-loading [id]="box.id"></app-loading>
@@ -199,6 +199,6 @@
     </ng-template>
 </div>
 
-<div class="box-details-component-card-footer card-footer text-muted">
+<div class="custom-card-footer card-footer text-muted">
     <app-connection-info></app-connection-info>
 </div>

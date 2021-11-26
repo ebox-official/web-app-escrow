@@ -6,12 +6,15 @@ import { LoginComponent } from './components/login/login.component';
 import { MainComponent } from './components/main/main.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { MyTransactionsComponent } from './components/my-transactions/my-transactions.component';
-import { BoxesComponent } from './components/boxes/boxes.component';
-import { BoxDetailsComponent } from './components/boxes/box-details/box-details.component';
+import { BoxesComponent } from './components/my-transactions/boxes/boxes.component';
+import { BoxDetailsComponent } from './components/my-transactions/boxes/box-details/box-details.component';
 import { AuthGuard } from './guards/auth.guard';
-import { ONE_WAY, OTC_TRADE } from './components/boxes/box';
+import { ONE_WAY, OTC_TRADE } from './components/my-transactions/boxes/box';
 import { StakingComponent } from './components/staking/staking.component';
 import { GovernanceComponent } from './components/governance/governance.component';
+import { VotingsComponent } from './components/governance/votings/votings.component';
+import { VotingDetailsComponent } from './components/governance/votings/voting-details/voting-details.component';
+import { COMMUNITY, PROJECT } from './components/governance/votings/voting';
 
 const routes: Routes = [
   {
@@ -84,20 +87,30 @@ const routes: Routes = [
         children: [
           {
             path: "",
-            redirectTo: "incoming",
+            redirectTo: "project",
             pathMatch: "full"
           },
           {
-            path: "incoming",
-            component: BoxesComponent,
-            data: { mode: "incoming" },
+            path: "project",
+            component: VotingsComponent,
+            data: { mode: PROJECT },
           },
           {
-            path: "outgoing",
-            component: BoxesComponent,
-            data: { mode: "outgoing" },
+            path: "community",
+            component: VotingsComponent,
+            data: { mode: COMMUNITY },
           },
         ]
+      },
+      {
+        path: "governance/project/:votingId",
+        component: VotingDetailsComponent,
+        data: { mode: PROJECT },
+      },
+      {
+        path: "governance/community/:votingId",
+        component: VotingDetailsComponent,
+        data: { mode: COMMUNITY },
       },
       {
         path: "**",

@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { monthNames } from "../data/constants"
+import { isNotNullOrUndefined } from '../utilities/utils';
 
 @Pipe({
   name: 'dateFormatter'
@@ -8,6 +9,10 @@ export class DateFormatterPipe implements PipeTransform {
 
   // Accept Date objects, 10-digits timestamps or 13-digits timestamps
   transform(value: any, ...args: unknown[]): string {
+
+    if (!isNotNullOrUndefined(value)) {
+      return "Invalid input. (DateFormatterPipe)";
+    }
     
     let stringified = value.toString();
 
@@ -18,7 +23,7 @@ export class DateFormatterPipe implements PipeTransform {
     let isInvalidNumber = isNumber && (stringified.length < 10 || stringified.length > 13);
     
     if (isInvalidDate || isInvalidNumber) {
-      return "An invalid input was given to DateFormatterPipe."
+      return "Invalid input. (DateFormatterPipe)"
     }
 
     if (isJavascriptDate) {

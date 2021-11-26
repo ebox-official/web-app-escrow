@@ -1,0 +1,9 @@
+<div class="position-relative p-3 border-bottom pointer" (click)="goToDetails();">
+    <div class="d-flex flex-column gap-3">
+        <div class="d-flex justify-content-between">
+            <label class="fw-bold">Vote #{{ voting.n }}</label>
+            <small [class.text-muted]="voting.status === FINISHED" [class.text-primary]="voting.status === LIVE">{{ voting.status }}</small>
+        </div>
+        <div>{{ voting.question }}</div>
+    </div>
+</div>

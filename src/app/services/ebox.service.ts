@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ConnectionService } from './connection/connection.service';
 import { ERC20_ABI, ETHBOX, STAKING, TOKEN_DISPENSER } from '../data/abis';
 import { BehaviorSubject } from 'rxjs';
-import { AppBox, COMPLETE, ONE_WAY, OTC_TRADE, PENDING } from '../components/boxes/box';
+import { AppBox, COMPLETE, ONE_WAY, OTC_TRADE, PENDING } from '../components/my-transactions/boxes/box';
 import { TokenSelectorService } from '../components/modals/token-selector/token-selector.service';
 import { ADDRESS_ZERO, MAX_VALUE, ZERO } from '../data/constants';
 import { BigNumber } from '@ethersproject/bignumber';

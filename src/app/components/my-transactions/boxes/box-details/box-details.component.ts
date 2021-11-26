@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConnectionService } from 'src/app/services/connection/connection.service';
 import { EboxService } from 'src/app/services/ebox.service';
-import { LoadingService } from '../../loading/loading.service';
+import { LoadingService } from '../../../loading/loading.service';
 import { COMPLETE, ONE_WAY, OTC_TRADE, PENDING } from '../box';
 
 @Component({

@@ -25,10 +25,11 @@ export interface BlockchainBoxPrivacy {
 
 // AppBox is the result of runtime manipulation to BlockchainBox
 export interface AppBox {
+    mode: string; // "One-way" or "OTC trade"
+    status: string; // "Pending" or "Pomplete"
+
     id: string;
-    mode: string; // "One-way" or "OTC trade";
     timestamp: string;
-    status: string; // "pending" or "complete";
     isPrivate: boolean;
 
     sender: string;

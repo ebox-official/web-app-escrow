@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalsService } from 'src/app/components/modals/modals.service';
 import { Token } from 'src/app/components/modals/token-selector/token';
 import { formToObject } from 'src/app/utilities/utils';
-import { COMPLETE, ONE_WAY, OTC_TRADE, PENDING } from '../../boxes/box';
+import { COMPLETE, ONE_WAY, OTC_TRADE, PENDING } from '../../my-transactions/boxes/box';
 import { FiltersService } from './filters.service';
 
 @Component({
@@ -14,7 +14,7 @@ export class FiltersComponent implements OnInit {
 
   @ViewChild("form") form;
 
-  // These are generic because I only need them for reset
+  // These handles are only need to reset the filters
   @ViewChild("defaultSortBy") defaultSortBy;
   @ViewChild("status1") status1;
   @ViewChild("status2") status2;

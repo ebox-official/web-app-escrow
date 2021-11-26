@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EboxService } from 'src/app/services/ebox.service';
-import { FiltersService } from '../offcanvases/filters/filters.service';
+import { FiltersService } from '../../offcanvases/filters/filters.service';
 import { map } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
 import { AppBox } from './box';

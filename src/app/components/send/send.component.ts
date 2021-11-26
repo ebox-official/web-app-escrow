@@ -7,7 +7,7 @@ import { TokenSelectorService } from 'src/app/components/modals/token-selector/t
 import { ConnectionService } from 'src/app/services/connection/connection.service';
 import { EboxService } from 'src/app/services/ebox.service';
 import { maskCurrency, unmaskCurrency, formToObject, delay, CURRENCY_REGEX } from "../../utilities/utils";
-import { ONE_WAY, OTC_TRADE } from '../boxes/box';
+import { ONE_WAY, OTC_TRADE } from '../my-transactions/boxes/box';
 import { ToasterService } from '../toaster/toaster.service';
 import { BoxInputs } from './box-inputs';
 
