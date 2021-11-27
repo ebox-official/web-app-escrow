@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ComponentFactoryResolver } from '@angular/core';
 import { DclHostDirective } from 'src/app/directives/dcl-host.directive';
+import { VotingDetailsModalComponent } from './governance/voting-details-modal/voting-details-modal.component';
 import { AddressbookCreateComponent } from './addressbook/addressbook-create/addressbook-create.component';
 import { AddressbookReadComponent } from './addressbook/addressbook-read/addressbook-read.component';
 import { AddressbookUpdateComponent } from './addressbook/addressbook-update/addressbook-update.component';
 import { AllowContractComponent } from './allow-contract/allow-contract.component';
 import { AreYouSureComponent } from './are-you-sure/are-you-sure.component';
+import { VotersComponent } from './governance/voters/voters.component';
 import { TokenSelectorCreateComponent } from './token-selector/token-selector-create/token-selector-create.component';
 import { TokenSelectorReadComponent } from './token-selector/token-selector-read/token-selector-read.component';
 
@@ -36,6 +38,8 @@ export class ModalsService {
     ADDRESSBOOK_READ: AddressbookReadComponent,
     ADDRESSBOOK_UPDATE: AddressbookUpdateComponent,
     ALLOW_CONTRACT: AllowContractComponent,
+    VOTERS: VotersComponent,
+    VOTING_DETAILS: VotingDetailsModalComponent
     // Add new modal entries here (4.)
   };
 
@@ -53,15 +57,29 @@ export class ModalsService {
     let componentName = this.getComponentName(component);
     if (!componentName) return;
 
-    let { data, service } = this._modals[componentName];
+    let _component = this._modals[componentName];
 
     // Inject data into the component and show modal
-    Object.assign(data, newData);
-    service.bootstrapModal.show();
+    Object.assign(_component.data, newData);
+    _component.service.bootstrapModal.show();
 
-    // Return a promoise that the modal can resolve
+    // If there's an onOpen method registered, then call it
+    if (_component.onOpen && typeof _component.onOpen === "function") {
+      _component.onOpen();
+    }
+
+    // If there's an onClose method registered, then call it on hidden
+    if (_component.onClose && typeof _component.onClose === "function") {
+      let evtListener = () => {
+        _component.onClose();
+        _component.service.nativeElement.removeEventListener("hidden.bs.modal", evtListener);
+      };
+      _component.service.nativeElement.addEventListener("hidden.bs.modal", evtListener);
+    }
+
+    // Return a promise that the modal can resolve
     return new Promise(resolve =>
-      service.resolve = (data) => {
+      _component.service.resolve = (data) => {
         this.close(component, () => resolve(data));
       }
     );
@@ -74,11 +92,25 @@ export class ModalsService {
     let componentName = this.getComponentName(component);
     if (!componentName) return;
 
-    let { data, service } = this._modals[componentName];
+    let _component = this._modals[componentName];
 
     // Inject data into the component and show modal
-    Object.assign(data, newData);
-    service.bootstrapModal.show();
+    Object.assign(_component.data, newData);
+    _component.service.bootstrapModal.show();
+
+    // If there's an onOpen method registered, then call it
+    if (_component.onOpen && typeof _component.onOpen === "function") {
+      _component.onOpen();
+    }
+
+    // If there's an onClose method registered, then call it on hidden
+    if (_component.onClose && typeof _component.onClose === "function") {
+      let evtListener = () => {
+        _component.onClose();
+        _component.service.nativeElement.removeEventListener("hidden.bs.modal", evtListener);
+      };
+      _component.service.nativeElement.addEventListener("hidden.bs.modal", evtListener);
+    }
   }
 
   // Close a modal
@@ -88,7 +120,7 @@ export class ModalsService {
     let componentName = this.getComponentName(component);
     if (!componentName) return;
 
-    let { service } = this._modals[componentName];
+    let _component = this._modals[componentName];
 
     // Return a promise that will resolve on hidden
     return new Promise(resolve => {
@@ -97,10 +129,10 @@ export class ModalsService {
           callback();
         }
         resolve("Bootstrap modal hidden.");
-        service.nativeElement.removeEventListener("hidden.bs.modal", evtListener);
+        _component.service.nativeElement.removeEventListener("hidden.bs.modal", evtListener);
       };
-      service.nativeElement.addEventListener("hidden.bs.modal", evtListener);
-      service.bootstrapModal.hide();
+      _component.service.nativeElement.addEventListener("hidden.bs.modal", evtListener);
+      _component.service.bootstrapModal.hide();
     });
   }
 

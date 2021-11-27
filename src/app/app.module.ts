@@ -46,6 +46,8 @@ import { VotingsComponent } from './components/governance/votings/votings.compon
 import { VotingListItemComponent } from './components/governance/votings/voting-list-item/voting-list-item.component';
 import { BsTooltipDirective } from './directives/bs-tooltip.directive';
 import { VotingDetailsComponent } from './components/governance/votings/voting-details/voting-details.component';
+import { VotersComponent } from './components/modals/governance/voters/voters.component';
+import { VotingDetailsModalComponent } from './components/modals/governance/voting-details-modal/voting-details-modal.component';
 
 @NgModule({
   declarations: [
@@ -92,6 +94,8 @@ import { VotingDetailsComponent } from './components/governance/votings/voting-d
     VotingListItemComponent,
     VotingDetailsComponent,
     BsTooltipDirective,
+    VotersComponent,
+    VotingDetailsModalComponent
   ],
   imports: [
     BrowserModule,

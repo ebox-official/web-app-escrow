@@ -1,0 +1,44 @@
+<div #modal class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content h-75">
+            <div class="modal-header">
+                <h5 class="modal-title">voting details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="p-3 text-center">
+                <div class="form-floating">
+                    <input #search ngModel type="search" class="form-control" id="contact-search" placeholder="Search">
+                    <label for="contact-search">Search</label>
+                </div>
+            </div>
+            <div class="modal-body">
+
+                <div *ngIf="votingDetails" class="d-flex flex-column gap-3">
+                    <div *ngFor="let vd of votingDetails | async | listSearch: search.value; index as i;" class="d-flex flex-column gap-2 overflow-hidden border border-body rounded px-3 py-2 text-break">
+                        <div>
+                            <small class="text-muted">{{ vd.time | dateFormatter }}</small>
+                        </div>
+                        <div>
+                            <label class="fw-bold">Address</label>
+                            <div *ngIf="connection.networkInfo() as netInfo">
+                                <a [href]="netInfo.accountScannerUrl(vd.address)" target="_blank">
+                                    <i class="bi bi-box-arrow-up-right"></i>
+                                    {{ vd.address }}
+                                </a>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="fw-bold">Voting Power</label>
+                            <div>{{ vd.voting_power | multiplierFormatter }}</div>
+                        </div>
+                        <div>
+                            <label class="fw-bold">Vote</label>
+                            <div>{{ "abcdefjhijklmnopqrstuvwxyz"[vd.vote - 1] }}</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ConnectionService } from 'src/app/services/connection/connection.service';
+import { ToasterService } from '../toaster/toaster.service';
 import { COMMUNITY, FINISHED, LIVE, NOT_STARTED, Voting } from './votings/voting';
 
 @Injectable({
@@ -9,7 +10,10 @@ export class GovernanceService {
 
   private endpoint = "https://www.ebox.io/gov/voting.php";
 
-  constructor(private connection: ConnectionService) { }
+  constructor(
+    private connection: ConnectionService,
+    private toasterService: ToasterService
+  ) { }
 
   getUTCTime(now: Date) {
     let utc = new Date(now. getTime() + now. getTimezoneOffset() * 60000)
@@ -29,9 +33,14 @@ export class GovernanceService {
     let { data } = await response.json();
 
     data.forEach(voting => {
+
+      // UTCify the timestamps
       voting.time_start = this.getUTCTime(new Date(voting.time_start * 1000));
       voting.time_end = this.getUTCTime(new Date(voting.time_end * 1000));
+
       voting.mode = mode;
+
+      // Set the status
       if (this.getUTCTime(new Date()) > voting.time_start && this.getUTCTime(new Date()) < voting.time_end) {
         voting.status = LIVE;
       }
@@ -42,6 +51,9 @@ export class GovernanceService {
         voting.status = FINISHED;
       }
       voting.answers = JSON.parse(voting.answers);
+
+      // Set a dummy percentage property to 0
+      voting.answers.forEach(answer => answer.percentage = 0);
     });
 
     return data.reverse();
@@ -133,39 +145,41 @@ export class GovernanceService {
     return data.sort((a, b) => b.voting_power - a.voting_power);
   }
 
-  // async vote(proposal, selectedChoice) {
+  async vote(votingNumber: string, voteIndex: string) {
 
-  //   let selectedAccount = this.contractServ.selectedAccount$.getValue();
+    let response: any = await this.signMessage(`ethbox Vote #${votingNumber}`);
+    let signedMessage = response.result;
 
-  //   let response: any = await this.contractServ
-  //     .signMessage(`ethbox Vote #${proposal.n}`);
-  //   let signedMessage = response.result;
+    let payload = new FormData();
+    payload.append("action", "cast_vote");
+    payload.append("voting", votingNumber);
+    payload.append("address", this.connection.selectedAccount$.getValue());
+    payload.append("signed_msg", signedMessage);
+    payload.append("vote", voteIndex);
 
-  //   console.log('Signed message is', signedMessage);
+    await fetch(this.endpoint, { method: "POST", body: payload });
+  }
 
-  //   this.castVote(
-  //     proposal,
-  //     selectedChoice,
-  //     selectedAccount,
-  //     signedMessage);
-  // }
+  private async signMessage(message) {
 
-  // private async castVote(proposal, vote, account, signedMessage) {
+    let signature;
+    try {
+      signature = await this.connection.signer$.getValue().signMessage(message);
+    }
+    catch (err) {
+      this.toasterService.addToaster({
+        color: "danger",
+        message: "Message signing aborted by user."
+      });
+      throw err;
+    }
 
-  //   console.log('Proposal is', proposal);
-  //   console.log('Choosen vote is', vote);
-  //   console.log('Connected account is', account);
-  //   console.log('Signed message is', signedMessage);
+    this.toasterService.addToaster({
+      color: "success",
+      message: "Message signed successfully!"
+    });
 
-  //   let formData = new FormData();
-  //   formData.append('action', 'cast_vote');
-  //   formData.append('voting', proposal.n);
-  //   formData.append('address', account);
-  //   formData.append('signed_msg', signedMessage);
-  //   formData.append('vote', vote);
-
-  //   // I have no idea what's the response looks like (json or text or both depending on the execution?)
-  //   let response = await fetch(this.endpoint, { method: 'POST', body: formData });
-  //   return response;
-  // }
+    // Return the signature to the consumer
+    return signature;
+  }
 }
