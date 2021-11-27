@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ConnectionService } from 'src/app/services/connection/connection.service';
-import { ToasterService } from '../toaster/toaster.service';
 import { COMMUNITY, FINISHED, LIVE, NOT_STARTED, Voting } from './votings/voting';
 
 @Injectable({
@@ -10,10 +9,7 @@ export class GovernanceService {
 
   private endpoint = "https://www.ebox.io/gov/voting.php";
 
-  constructor(
-    private connection: ConnectionService,
-    private toasterService: ToasterService
-  ) { }
+  constructor(private connection: ConnectionService) { }
 
   getUTCTime(now: Date) {
     let utc = new Date(now. getTime() + now. getTimezoneOffset() * 60000)
@@ -147,7 +143,7 @@ export class GovernanceService {
 
   async vote(votingNumber: string, voteIndex: string) {
 
-    let response: any = await this.signMessage(`ethbox Vote #${votingNumber}`);
+    let response: any = await this.connection.signMessage(`ethbox Vote #${votingNumber}`);
     let signedMessage = response.result;
 
     let payload = new FormData();
@@ -158,28 +154,5 @@ export class GovernanceService {
     payload.append("vote", voteIndex);
 
     await fetch(this.endpoint, { method: "POST", body: payload });
-  }
-
-  private async signMessage(message) {
-
-    let signature;
-    try {
-      signature = await this.connection.signer$.getValue().signMessage(message);
-    }
-    catch (err) {
-      this.toasterService.addToaster({
-        color: "danger",
-        message: "Message signing aborted by user."
-      });
-      throw err;
-    }
-
-    this.toasterService.addToaster({
-      color: "success",
-      message: "Message signed successfully!"
-    });
-
-    // Return the signature to the consumer
-    return signature;
   }
 }

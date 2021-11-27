@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import { isNotNullOrUndefined } from '../../utilities/utils';
 import { ProvidersService } from './providers.service';
 import { BigNumber } from '@ethersproject/bignumber';
+import { ToasterService } from 'src/app/components/toaster/toaster.service';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,10 @@ export class ConnectionService {
   private cacheProvider = true;
   private updateVarsTimer;
 
-  constructor(private providers: ProvidersService) {
+  constructor(
+    private providers: ProvidersService,
+    private toasterService: ToasterService
+  ) {
 
     // Tweak the state of connection based on provider, signer, chainId, selectedAccount and baseTokenBalance
     let isConnectedMonitor = [
@@ -124,6 +128,30 @@ export class ConnectionService {
   // Check if the given address is valid
   isAddressValid(address: string): boolean {
     return this.ethers.utils.isAddress(address);
+  }
+
+  async signMessage(message) {
+
+    let signature;
+    try {
+      signature = await this.signer$.getValue().
+        signMessage(message);
+    }
+    catch (err) {
+      this.toasterService.addToaster({
+        color: "danger",
+        message: "Message signing aborted by user."
+      });
+      throw err;
+    }
+
+    this.toasterService.addToaster({
+      color: "success",
+      message: "Message signed successfully!"
+    });
+
+    // Return the signature to the consumer
+    return signature;
   }
 
   networkInfo() {

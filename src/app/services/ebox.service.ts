@@ -23,6 +23,7 @@ export class EboxService {
 
   boxes_incoming$ = new BehaviorSubject(null);
   boxes_outgoing$ = new BehaviorSubject(null);
+  dappReady$ = new BehaviorSubject(false);
 
   private dappContractAddress;
   private dappContract;
@@ -116,6 +117,7 @@ export class EboxService {
       }
 
       this.setBoxesTimer();
+      this.dappReady$.next(true);
 
     });
   }
@@ -127,7 +129,7 @@ export class EboxService {
   private reset() {
 
     clearTimeout(this.boxesTimer);
-    // TODO: remove next from boxes$
+    this.dappReady$.next(false);
 
     this.dappContractAddress = null;
     this.dappContract = null;
@@ -403,11 +405,11 @@ export class EboxService {
     }
     catch (err) {
       this.notifyErrorTx(err);
+      this.loadingService.off(box.id);
       throw err;
     }
 
     this.notifyConfirmTx("Cancelling transaction successful!", receipt);
-
     this.loadingService.off(box.id);
 
     // Return receipt to the consumer
@@ -515,11 +517,11 @@ export class EboxService {
     }
     catch (err) {
       this.notifyErrorTx(err);
+      this.loadingService.off(box.id);
       throw err;
     }
 
     this.notifyConfirmTx("Unboxed successfully!", receipt);
-
     this.loadingService.off(box.id);
 
     // Return receipt to the consumer
@@ -680,11 +682,11 @@ export class EboxService {
     }
     catch (err) {
       this.notifyErrorTx(err);
+      this.loadingService.off(boxInputs.mode);
       throw err;
     }
 
     this.notifyConfirmTx("Your outgoing transaction has been confirmed!", receipt);
-
     this.loadingService.off(boxInputs.mode);
 
     // Return receipt to the consumer
@@ -731,6 +733,62 @@ export class EboxService {
     // Return receipt to the consumer
     return receipt;
   }
+
+
+
+
+
+  // Return the decimal value for the staking rewards the user can claim
+  // Read only query
+  async getReward() {
+    return this.connection.weiToDecimal(
+      await this.stakingContract.getUnclaimedReward(),
+      18
+    );
+  }
+
+
+
+
+
+  // State changing operation
+  async claimReward() {
+
+    this.loadingService.on("staking");
+
+    // Making of the transaction
+    let tx;
+    try {
+      tx = await this.stakingContract.claimReward();
+    }
+    catch (err) {
+      this.toasterService.addToaster({
+        color: "danger",
+        message: "Claiming reward aborted by user."
+      });
+      this.loadingService.off("staking");
+      throw err;
+    }
+
+    this.notifyWaitTx(tx);
+
+    let receipt;
+    try {
+      receipt = await tx.wait();
+    }
+    catch (err) {
+      this.notifyErrorTx(err);
+      this.loadingService.off("staking");
+      throw err;
+    }
+
+    this.notifyConfirmTx(`Reward has been claimed!`, receipt);
+    this.loadingService.off("staking");
+
+    // Return receipt to the consumer
+    return receipt;
+  }
+
 
 
 
