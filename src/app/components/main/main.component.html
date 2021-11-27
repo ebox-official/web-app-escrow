@@ -22,15 +22,15 @@
     <!-- /visible only after md -->
 
     <!-- visible only before md -->
-    <a class="d-md-none bg-body border link-unstyled" href="#" role="button" id="my-dropup" data-bs-toggle="dropdown" aria-expanded="false" routerLinkActive="active" [class.active]="rla.isActive">
+    <a class="d-md-none bg-body border link-unstyled" href="#" role="button" id="my-dropup" data-bs-toggle="dropdown" aria-expanded="false" routerLinkActive="active" [class.active]="myTransaction.isActive || staking.isActive || governance.isActive">
         <i class="bi bi-three-dots"></i>
     </a>
     <ul class="dropdown-menu" aria-labelledby="my-dropup" data-popper-placement="top-start" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate(0px, -40px);">
         <li><h6 class="dropdown-header">Other</h6></li>
 
-        <li><a class="dropdown-item" routerLinkActive="active" #rla="routerLinkActive" [routerLink]="['transactions']">my transactions</a></li>
-        <li><a class="dropdown-item" routerLinkActive="active" [routerLink]="['staking']">staking</a></li>
-        <li><a class="dropdown-item" routerLinkActive="active" [routerLink]="['governance']">governance</a></li>
+        <li><a class="dropdown-item" routerLinkActive="active" #myTransaction="routerLinkActive" [routerLink]="['transactions']">my transactions</a></li>
+        <li><a class="dropdown-item" routerLinkActive="active" #staking="routerLinkActive" [routerLink]="['staking']">staking</a></li>
+        <li><a class="dropdown-item" routerLinkActive="active" #governance="routerLinkActive" [routerLink]="['governance']">governance</a></li>
 
         <ng-container *ngIf="isTestnet()">
             <li><hr class="dropdown-divider"></li>

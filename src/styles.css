@@ -61,11 +61,11 @@ body {
 
 @media (max-width: 767px) {
   .custom-card-header {
-    border-radius: 0;
+    border-radius: 0!important;
   }
 
   .custom-card-footer {
-    border-radius: 0;
+    border-radius: 0!important;
   }
 }
 
