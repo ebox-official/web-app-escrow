@@ -25,8 +25,8 @@
                                 "Received" :
                                 "Receive" :
                             box.status === COMPLETE ?
-                                "Given"
-                                : "Give"
+                                "Given" :
+                                "Give"
                     }}</div>
                     <img height="32" [src]="box.sendTokenInfo.thumb" [alt]="box.sendTokenInfo.symbol" onerror="this.src='assets/img/unknown-icon.png'">
                     <div>{{ box.sendValueDecimal | multiplierFormatter }} {{ box.sendTokenInfo.symbol }}</div>
@@ -39,8 +39,8 @@
                                 "Given" :
                                 "Give" :
                             box.status === COMPLETE ?
-                                "Received"
-                                : "Receive"
+                                "Received" :
+                                "Receive"
                     }}</div>
                     <img height="32" [src]="box.requestTokenInfo.thumb" [alt]="box.requestTokenInfo.symbol" onerror="this.src='assets/img/unknown-icon.png'">
                     <div>{{ box.requestValueDecimal | multiplierFormatter }} {{ box.requestTokenInfo.symbol }}</div>
