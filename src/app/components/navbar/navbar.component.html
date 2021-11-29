@@ -1,37 +1,14 @@
 <!-- Hackfix for fixed navbar -->
 <div style="margin-bottom: 60px;"></div>
 
-<nav class="navbar fixed-top navbar-expand-lg fw-bold navbar-light bg-body border-bottom" style="min-height: 60px;">
+<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-body border-bottom" style="min-height: 60px;">
     <div class="container-fluid">
         <a class="navbar-brand d-flex align-items-center" href="#">
             <div style="width: 81px; height: 24px;" class="ebox-logo"></div>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav align-items-start align-items-lg-center ms-auto mb-2 mb-lg-0 gap-lg-5">
-                <li class="nav-item">
-                    <a class="nav-link" routerLinkActive="active" routerLink="/main/send">send</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" routerLinkActive="active" routerLink="/main/otc">otc trade</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" routerLinkActive="active" routerLink="/main/transactions">my transactions</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#console-offcanvas" data-bs-toggle="offcanvas">console</a>
-                </li>
-
-                <button *ngIf="connection.isConnected$ | async" class="my-2 my-lg-0 btn btn-outline-primary" (click)="disconnect();">disconnect</button>
-
-                <li class="nav-item d-flex align-items-center py-2 p-lg-2">
-                    <div class="form-check form-switch">
-                        <input (input)="setDarkmode()" #darkModeCheck class="form-check-input" type="checkbox">
-                    </div>
-                </li>
-            </ul>
+        <div class="form-check form-switch">
+            <input (input)="setDarkmode()" #darkModeCheck id="dark-mode-switch" class="form-check-input" type="checkbox">
+            <label class="form-check-label" for="dark-mode-switch">Dark mode</label>
         </div>
     </div>
 </nav>

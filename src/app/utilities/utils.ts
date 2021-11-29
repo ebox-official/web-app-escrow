@@ -24,8 +24,6 @@ let isNotNullOrUndefined = (value) => ![null, undefined].includes(value);
 
 let formToObject = (form) => Object["fromEntries"]((new FormData(form))["entries"]());
 
-let INVALID_MESSAGE = "Invalid.";
-
 let CURRENCY_REGEX = "^(0|[1-9]\\d{0,2}(,\\d{3})*)(\\.\\d\\d*)?$";
 
 let formatter = new Intl.NumberFormat('en-US', {
@@ -41,19 +39,16 @@ let maskCurrency = (value) => {
     }
     let formatted = formatter.format(value);
     if (/NaN/.test(formatted)) {
-        return INVALID_MESSAGE;
+        return value;
     }
-    else {
-        return formatted.replace("$", "");
-    }
+    return formatted.replace("$", "");
 }
 
 let unmaskCurrency = (value) => {
     if ((new RegExp(CURRENCY_REGEX)).test(value)) {
         return value.replaceAll(",", "");
-    } else {
-      return "";
     }
+    return value;
 }
 
 let delay = (ms) => {

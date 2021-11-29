@@ -1,6 +1,4 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { ConnectionService } from 'src/app/services/connection/connection.service';
 
 @Component({
   selector: 'app-navbar',
@@ -10,10 +8,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   @ViewChild("darkModeCheck") darkModeCheck;
 
-  constructor(
-    public connection: ConnectionService,
-    private router: Router
-  ) { }
+  constructor() { }
 
   ngOnInit(): void {
     
@@ -32,11 +27,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   setDarkmode() {
     window["darkmode"].toggleDarkMode();
-  }
-
-  disconnect() {
-    this.connection.disconnect();
-    this.router.navigate([""], { queryParams: { returnUrl: this.router.url } });
   }
 
 }

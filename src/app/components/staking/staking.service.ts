@@ -68,15 +68,15 @@ export class StakingService {
 
     console.log("Status is", status);
 
-    return checkbox.nativeElement.checked = !!status.result;
+    return checkbox.nativeElement.checked = !status.result;
   }
 
   async changeChainRewards(checkbox) {
 
     // chainIndex is NOT the chainId
-    let chainIndex = checkbox.checked ? "1" : "0";
+    let chainIndex = checkbox.checked ? "0" : "1";
 
-    let newNetwork = ["Binance Smart Chain", "Ethereum"][chainIndex];
+    let newNetwork = ["Ethereum", "Binance Smart Chain"][chainIndex];
 
     // Build a magic string as message
     let msg = `Staking - Set default chain:\r\n${newNetwork}`;
