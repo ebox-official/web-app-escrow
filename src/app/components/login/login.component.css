@@ -3,6 +3,17 @@
     grid-gap: 12px;
 }
 
+.wallet-icon-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 4rem;
+    height: 4rem;
+    background-color: var(--bs-white);
+    border: 1px solid #eee;
+    border-radius: 50%;
+}
+
 @media (min-width: 576px) {
     .wallet-badges {
         grid-template-columns: 100%;
@@ -27,12 +38,12 @@
 
 @media (min-width: 1200px) {
     .wallet-badges {
-        grid-template-columns: 25% 25%;
+        grid-template-columns: 25% 25% 25%;
     }
 }
 
 @media (min-width: 1400px) {
     .wallet-badges {
-        grid-template-columns: 20% 20%;
+        grid-template-columns: 20% 20% 20%;
     }
 }

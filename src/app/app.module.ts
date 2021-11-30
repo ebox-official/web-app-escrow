@@ -48,6 +48,8 @@ import { BsTooltipDirective } from './directives/bs-tooltip.directive';
 import { VotingDetailsComponent } from './components/governance/votings/voting-details/voting-details.component';
 import { VotersComponent } from './components/modals/governance/voters/voters.component';
 import { VotingDetailsModalComponent } from './components/modals/governance/voting-details-modal/voting-details-modal.component';
+import { ChooseNetworkComponent } from './components/modals/providers/choose-network/choose-network.component';
+import { PolkadotProviderModalComponent } from './components/modals/providers/polkadot-provider-modal/polkadot-provider-modal.component';
 
 @NgModule({
   declarations: [
@@ -95,7 +97,9 @@ import { VotingDetailsModalComponent } from './components/modals/governance/voti
     VotingDetailsComponent,
     BsTooltipDirective,
     VotersComponent,
-    VotingDetailsModalComponent
+    VotingDetailsModalComponent,
+    ChooseNetworkComponent,
+    PolkadotProviderModalComponent
   ],
   imports: [
     BrowserModule,

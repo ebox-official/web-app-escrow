@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { ConnectionService } from 'src/app/services/connection/connection.service';
 
 @Component({
   selector: 'app-navbar',
@@ -8,10 +9,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   @ViewChild("darkModeCheck") darkModeCheck;
 
-  constructor() { }
+  constructor(public connection: ConnectionService) { }
 
   ngOnInit(): void {
-    
   }
 
   ngAfterViewInit() {

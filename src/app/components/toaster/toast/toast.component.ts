@@ -5,7 +5,7 @@ import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/cor
   template: `
     <div #toast class="toast align-items-center text-white border-0" role="alert">
       <div class="d-flex">
-        <div class="toast-body">{{ toastMessage.message }}</div>
+        <div class="toast-body text-break">{{ toastMessage.message }}</div>
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
     </div>

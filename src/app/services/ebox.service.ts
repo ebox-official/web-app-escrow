@@ -199,8 +199,13 @@ export class EboxService {
   private setBoxesTimer() {
 
     let loop = async () => {
-      await this.emitBoxesIn();
-      await this.emitBoxesOut();
+      try {
+        await this.emitBoxesIn();
+        await this.emitBoxesOut();
+      }
+      catch (err) {
+        console.error(`There was an error while retrieving the boxes. (${err})`);
+      }
       this.boxesTimer = setTimeout(() => loop(), this.refreshRate);
     }
 
@@ -410,9 +415,10 @@ export class EboxService {
     }
 
     this.notifyConfirmTx("Cancelling transaction successful!", receipt);
-    this.loadingService.off(box.id);
 
-    // Return receipt to the consumer
+    // Refetch boxes, stop loading and return to the consumer
+    await this.emitBoxesOut();
+    this.loadingService.off(box.id);
     return receipt;
   }
 
@@ -522,9 +528,10 @@ export class EboxService {
     }
 
     this.notifyConfirmTx("Unboxed successfully!", receipt);
+    
+    // Refetch boxes, stop loading and return to the consumer
+    await this.emitBoxesIn();
     this.loadingService.off(box.id);
-
-    // Return receipt to the consumer
     return receipt;
   }
 
@@ -687,9 +694,10 @@ export class EboxService {
     }
 
     this.notifyConfirmTx("Your outgoing transaction has been confirmed!", receipt);
-    this.loadingService.off(boxInputs.mode);
 
-    // Return receipt to the consumer
+    // Refetch boxes, stop loading and return to the consumer
+    await this.emitBoxesOut();
+    this.loadingService.off(boxInputs.mode);
     return receipt;
   }
 

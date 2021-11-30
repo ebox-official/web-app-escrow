@@ -6,9 +6,12 @@
         <a class="navbar-brand d-flex align-items-center" href="#">
             <div style="width: 81px; height: 24px;" class="ebox-logo"></div>
         </a>
-        <div class="form-check form-switch">
-            <input (input)="setDarkmode()" #darkModeCheck id="dark-mode-switch" class="form-check-input" type="checkbox">
-            <label class="form-check-label" for="dark-mode-switch">Dark mode</label>
+        <div class="d-flex align-items-center gap-3">
+            <button *ngIf="connection.isConnected$ | async" class="btn btn-outline-primary" (click)="connection.disconnect();">disconnect</button>
+            <div class="form-check form-switch">
+                <input (input)="setDarkmode()" #darkModeCheck id="dark-mode-switch" class="form-check-input" type="checkbox">
+                <label for="dark-mode-switch" class="d-none d-md-block form-check-label">Dark mode</label>
+            </div>
         </div>
     </div>
 </nav>

@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, zip } from 'rxjs';
 import { ethers } from "ethers";
 import { isNotNullOrUndefined } from '../../utilities/utils';
 import { ProvidersService } from './providers.service';
 import { BigNumber } from '@ethersproject/bignumber';
 import { ToasterService } from 'src/app/components/toaster/toaster.service';
+import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -33,68 +34,52 @@ export class ConnectionService {
   ) {
 
     // Tweak the state of connection based on provider, signer, chainId, selectedAccount and baseTokenBalance
-    let isConnectedMonitor = [
+    zip(
       this.provider$,
       this.signer$,
       this.chainId$,
       this.selectedAccount$,
       this.baseTokenBalance$
-    ];
-    isConnectedMonitor.
-      forEach(obs =>
-        obs.subscribe(() => {
-          let isConnected = isConnectedMonitor.every(obs =>
-            isNotNullOrUndefined(obs.getValue())
-          );
+    ).subscribe(values => {
 
-          // Update its value only when has changed
-          if (this.isConnected$.getValue() !== isConnected) {
-            this.isConnected$.next(isConnected);
-          }
-        })
-      );
+      // When everything has emitted a non-falsy value, it means provider has connected
+      let isConnected = values.every(value => isNotNullOrUndefined(value));
 
-    // Tweak the state of the network based on chainId and selectedAccount
-    let networkChangeNotificationMonitor = [
-      this.chainId$,
-      this.selectedAccount$
-    ];
-    networkChangeNotificationMonitor.
-      forEach((obs, i) =>
-        obs.subscribe((value) => {
-          this.networkChangeNotification$.next({
-            topic: (i === 0) ? "chainId" : "selectedAccount",
-            value
-          });
-        })
-      );
-
-    this.isConnected$.subscribe((isConnected) => {
-
-      // The first time isConnected is false, so stop here
-      if (!isConnected) {
-        return;
+      // Emit a new state only when it changes
+      if (this.isConnected$.getValue() !== isConnected) {
+        this.isConnected$.next(isConnected);
       }
-      this.checkNetworkSupport();
-
-      this.networkChangeNotification$.subscribe(({ topic, value }) => {
-
-        // Value is null when the user has disconneted, in this case do nothing
-        if (value === null) {
-          return;
-        }
-        if (topic === "selectedAccount") {
-          window.location.reload();
-          return;
-        }
-        this.checkNetworkSupport(true);
-      });
-
     });
+
+    // Emit a network change when either chainId or selectedAccount change
+    this.chainId$.subscribe(value =>
+      this.networkChangeNotification$.
+        next({ topic: "chainId", value })
+    );
+    this.selectedAccount$.subscribe(value =>
+      this.networkChangeNotification$.
+        next({ topic: "selectedAccount", value })
+    );
+
+    // When the user has connected start tracking network changes:
+    // if the user changes either account or network, then refresh the dapp
+    this.isConnected$.pipe(
+      filter(value => value),
+      switchMap(_ => 
+        this.networkChangeNotification$.pipe(
+          takeUntil(
+            this.isConnected$.pipe(
+              filter(value => !value)
+            )
+          )
+        )
+      ),
+      map(_ => this.checkNetworkSupport())
+    ).subscribe();
   }
 
   private unsupportedShown = false;
-  private checkNetworkSupport(refresh?: boolean) {
+  private checkNetworkSupport() {
     
     let netInfo = this.networkInfo();
     if (netInfo.name === this.NOT_SUPPORTED) {
@@ -115,10 +100,7 @@ export class ConnectionService {
       }
     }
     
-    // If network has changed from unsupported to supported, then refresh
-    if (refresh) {
-      window.location.reload();
-    }
+    window.location.reload();
   }
 
   checksumAddress(address: string): string {
@@ -235,7 +217,7 @@ export class ConnectionService {
     try {
 
       // Await the evaluation of the connector
-      result = await providerConnector();
+      result = await providerConnector.call(this.providers);
     }
     catch (err) {
 
@@ -251,12 +233,20 @@ export class ConnectionService {
     // Sync variables
     await this.syncingIntervals(result.getNetwork, result.getAccounts);
 
-    // Cache the current provider
-    if (this.cacheProvider) {
-      localStorage.setItem(this.LS_KEY, providerName);
-    }
+    // When the connection is established, cache the provider and resolve
+    this.isConnected$.
+      subscribe(isConnected => {
 
-    resolve(true);
+        if (isConnected) {
+          
+          // Cache the current provider
+          if (this.cacheProvider) {
+            localStorage.setItem(this.LS_KEY, providerName);
+          }
+  
+          resolve(true);
+        }
+      });
   }
 
   connect(providerName?) {
@@ -288,23 +278,8 @@ export class ConnectionService {
   };
 
   disconnect() {
-    this.provider$.next(null);
-    this.signer$.next(null);
-
-    this.resetVariables();
-
-    if (this.updateVarsTimer) {
-      clearTimeout(this.updateVarsTimer);
-      this.updateVarsTimer = null;
-    }
-
     this.clearCachedProvider();
-  }
-
-  resetVariables() {
-    this.chainId$.next(null);
-    this.selectedAccount$.next(null);
-    this.baseTokenBalance$.next(null);
+    window.location.reload();
   }
 
   syncingIntervals(getNetwork, getAccounts) {

@@ -10,6 +10,8 @@ import { AreYouSureComponent } from './are-you-sure/are-you-sure.component';
 import { VotersComponent } from './governance/voters/voters.component';
 import { TokenSelectorCreateComponent } from './token-selector/token-selector-create/token-selector-create.component';
 import { TokenSelectorReadComponent } from './token-selector/token-selector-read/token-selector-read.component';
+import { ChooseNetworkComponent } from './providers/choose-network/choose-network.component';
+import { PolkadotProviderModalComponent } from './providers/polkadot-provider-modal/polkadot-provider-modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +41,9 @@ export class ModalsService {
     ADDRESSBOOK_UPDATE: AddressbookUpdateComponent,
     ALLOW_CONTRACT: AllowContractComponent,
     VOTERS: VotersComponent,
-    VOTING_DETAILS: VotingDetailsModalComponent
+    VOTING_DETAILS: VotingDetailsModalComponent,
+    CHOOSE_NETWORK: ChooseNetworkComponent,
+    POLKADOT_PROVIDER_MODAL: PolkadotProviderModalComponent
     // Add new modal entries here (4.)
   };
 
@@ -78,11 +82,14 @@ export class ModalsService {
     }
 
     // Return a promise that the modal can resolve
-    return new Promise(resolve =>
+    return new Promise((resolve, reject) => {
       _component.service.resolve = (data) => {
         this.close(component, () => resolve(data));
+      };
+      _component.service.reject = (data) => {
+        this.close(component, () => reject(data));
       }
-    );
+    });
   }
 
   // Open a modal

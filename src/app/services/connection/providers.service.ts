@@ -15,6 +15,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import * as PolkadotExtensionDapp from "@polkadot/extension-dapp";
 import * as ReefDefiEvmProvider from "@reef-defi/evm-provider";
 import * as PolkadotApi from "@polkadot/api";
+import { ModalsService } from 'src/app/components/modals/modals.service';
 
 let APP_NAME = "ethbox";
 let INFURA_API_KEY = "b5b51030cf3e451bb523a3f2ca10e3ff";
@@ -25,52 +26,50 @@ let FORTMATIC_API_KEY = "pk_test_ADCE42E053643A95";
 })
 export class ProvidersService {
 
+    RPCs = [
+        {
+            rpcUrl: "https://mainnet.infura.io/v3/" + INFURA_API_KEY,
+            chainId: 1,
+            networkName: "Ethereum Mainnet"
+        },
+        {
+            rpcUrl: "https://rinkeby.infura.io/v3/" + INFURA_API_KEY,
+            chainId: 4,
+            networkName: "Ethereum Testnet"
+        },
+        {
+            rpcUrl: "https://bsc-dataseed.binance.org/",
+            chainId: 56,
+            networkName: "Binance Mainnet"
+        },
+        {
+            rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545/",
+            chainId: 97,
+            networkName: "Binance Testnet"
+        },
+        {
+            rpcUrl: "https://rpc-mainnet.maticvigil.com/",
+            chainId: 187,
+            networkName: "Polygon Mainnet"
+        },
+        {
+            rpcUrl: "https://rpc-mumbai.matic.today/",
+            chainId: 80001,
+            networkName: "Polygon Testnet"
+        }
+    ];
+
     dictionary = {
         INJECTED: this.InjectedProviderConnector,
         METAMASK: this.MetaMaskConnector,
         BINANCE_CHAIN: this.BinanceConnector,
-        // COINBASE: this.CoinbaseConnector,
-        // FORTMATIC: this.FortmaticConnector,
-        // WALLETCONNECT: this.WalletConnectConnector,
+        FORTMATIC: this.FortmaticConnector,
+        COINBASE: this.CoinbaseConnector,
+        WALLETCONNECT: this.WalletConnectConnector,
         // POLKADOT: this.PolkadotConnector
     };
 
-    constructor() { }
-
-    private getRPCs(infuraKey) {
-        return [
-            {
-                rpcUrl: "https://mainnet.infura.io/v3/" + infuraKey,
-                chainId: 1,
-                networkName: "Ethereum Mainnet"
-            },
-            {
-                rpcUrl: "https://rinkeby.infura.io/v3/" + infuraKey,
-                chainId: 4,
-                networkName: "Ethereum Testnet"
-            },
-            {
-                rpcUrl: "https://bsc-dataseed.binance.org/",
-                chainId: 56,
-                networkName: "Binance Mainnet"
-            },
-            {
-                rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545/",
-                chainId: 97,
-                networkName: "Binance Testnet"
-            },
-            {
-                rpcUrl: "https://rpc-mainnet.maticvigil.com/",
-                chainId: 187,
-                networkName: "Polygon Mainnet"
-            },
-            {
-                rpcUrl: "https://rpc-mumbai.matic.today/",
-                chainId: 80001,
-                networkName: "Polygon Testnet"
-            }
-        ];
-    };
+    constructor(private ms: ModalsService) { }
 
     private async InjectedProviderConnector() {
         let provider = null;
@@ -147,155 +146,74 @@ export class ProvidersService {
         };
     }
 
-    // // Setup of Coinbase configurations
-    // private async CoinbaseConnector() {
+    // Setup of Fortmatic configurations
+    private async FortmaticConnector() {
 
-    //     // Spawn a modal and ask the user to which network to connect
-    //     let prompt = await new SmartPrompt();
+        let { rpcUrl, chainId } = await this.ms.openWithPromise(this.ms.modals.CHOOSE_NETWORK);
 
-    //     let rpcOptionsTemplate = getRPCs(INFURA_API_KEY)
-    //         .map(({ rpcUrl, chainId, networkName }) =>
-    //             `<option value="${rpcUrl};${chainId}">${networkName}</option>`
-    //         )
-    //         .join("");
+        let fm = new Fortmatic(FORTMATIC_API_KEY, { rpcUrl, chainId });
 
-    //     prompt.init({
-    //         figureColor: "#2d2f31",
-    //         groundColor: "#fafafa",
-    //         title: "WalletLink - Choose a network",
-    //         template: `<div style="display: grid; grid-gap: 1rem;">
-    // <div>
-    //     <p>
-    //         <label>Network</label>
-    //     </p>
-    //     <select name="networkString" required="true">
-    //         ${rpcOptionsTemplate}
-    //     </select>
-    // </div>
-    // </div>`
-    //     });
+        // Get ethers provider and signer
+        let ethersProvider = new ethers.providers.Web3Provider(fm.getProvider(), "any");
+        let signer = ethersProvider.getSigner();
 
-    //     let result = await prompt.spawn();
+        return {
+            provider: ethersProvider,
+            signer,
+            getNetwork: () => ({ chainId }),
+            getAccounts: ethersProvider.listAccounts.bind(ethersProvider)
+        };
+    }
 
-    //     let [networkUrl, chainId] = result.networkString.split(";");
+    // Setup of Coinbase configurations
+    private async CoinbaseConnector() {
 
-    //     let walletLink = new WalletLink({ appName: APP_NAME });
-    //     let provider = walletLink.makeWeb3Provider(networkUrl, chainId);
-    //     await provider.enable();
+        let { rpcUrl, chainId } = await this.ms.openWithPromise(this.ms.modals.CHOOSE_NETWORK);
 
-    //     // Get ethers provider and signer
-    //     let ethersProvider = new ethers.providers.Web3Provider(provider, "any");
-    //     let signer = ethersProvider.getSigner();
+        let walletLink = new WalletLink({ appName: APP_NAME });
+        let provider = walletLink.makeWeb3Provider(rpcUrl, chainId);
+        await provider.enable();
 
-    //     return {
-    //         provider: ethersProvider,
-    //         signer,
-    //         getNetwork: () => ({ chainId }),
-    //         getAccounts: ethersProvider.listAccounts.bind(ethersProvider)
-    //     };
-    // }
+        // Get ethers provider and signer
+        let ethersProvider = new ethers.providers.Web3Provider(provider, "any");
+        let signer = ethersProvider.getSigner();
 
-    // // Setup of Fortmatic configurations
-    // private async FortmaticConnector() {
+        return {
+            provider: ethersProvider,
+            signer,
+            getNetwork: () => ({ chainId }),
+            getAccounts: ethersProvider.listAccounts.bind(ethersProvider)
+        };
+    }
 
-    //     // Spawn a modal and ask the user to which network to connect
-    //     let prompt = await new SmartPrompt();
+    // Setup of WalletConnect configurations
+    private async WalletConnectConnector() {
 
-    //     let rpcOptionsTemplate = getRPCs(INFURA_API_KEY)
-    //         .map(({ rpcUrl, chainId, networkName }) =>
-    //             `<option value="${rpcUrl};${chainId}">${networkName}</option>`
-    //         )
-    //         .join("");
+        let { chainId } = await this.ms.openWithPromise(this.ms.modals.CHOOSE_NETWORK);
 
-    //     prompt.init({
-    //         figureColor: "#2d2f31",
-    //         groundColor: "#fafafa",
-    //         title: "Fortmatic - Choose a network",
-    //         template: `<div style="display: grid; grid-gap: 1rem;">
-    // <div>
-    //     <p>
-    //         <label>Network</label>
-    //     </p>
-    //     <select name="networkString" required="true">
-    //         ${rpcOptionsTemplate}
-    //     </select>
-    // </div>
-    // </div>`
-    //     });
+        let RPCMapping = this.RPCs.
+            reduce((obj, rpc) => (obj[rpc.chainId] = rpc.rpcUrl, obj), {});
 
-    //     let result = await prompt.spawn();
+        // Create WalletConnect Provider
+        let provider = new WalletConnectProvider({
+            rpc: { ...RPCMapping },
+            chainId
+        });
 
-    //     let [rpcUrl, chainId] = result.networkString.split(";");
+        //  Enable session (triggers QR Code modal)
+        await provider.enable();
 
-    //     let fm = new Fortmatic(FORTMATIC_API_KEY, { rpcUrl, chainId });
+        // Get ethers provider and signer
+        let ethersProvider = new ethers.providers.Web3Provider(provider, "any");
+        let signer = ethersProvider.getSigner();
 
-    //     // Get ethers provider and signer
-    //     let ethersProvider = new ethers.providers.Web3Provider(fm.getProvider(), "any");
-    //     let signer = ethersProvider.getSigner();
-
-    //     return {
-    //         provider: ethersProvider,
-    //         signer,
-    //         getNetwork: () => ({ chainId }),
-    //         getAccounts: ethersProvider.listAccounts.bind(ethersProvider)
-    //     };
-    // }
-
-    // // Setup of WalletConnect configurations
-    // private async WalletConnectConnector() {
-
-    //     // Spawn a modal and ask the user to which network to connect
-    //     let prompt = await new SmartPrompt();
-
-    //     let rpcOptionsTemplate = getRPCs(INFURA_API_KEY)
-    //         .map(({ rpcUrl, chainId, networkName }) =>
-    //             `<option value="${rpcUrl};${chainId}">${networkName}</option>`
-    //         )
-    //         .join("");
-
-    //     prompt.init({
-    //         figureColor: "#2d2f31",
-    //         groundColor: "#fafafa",
-    //         title: "WalletConnect - Choose a network",
-    //         template: `<div style="display: grid; grid-gap: 1rem;">
-    // <div>
-    //     <p>
-    //         <label>Network</label>
-    //     </p>
-    //     <select name="networkString" required="true">
-    //         ${rpcOptionsTemplate}
-    //     </select>
-    // </div>
-    // </div>`
-    //     });
-
-    //     let result = await prompt.spawn();
-
-    //     let [_, chainId] = result.networkString.split(";");
-
-    //     let RPCMapping = getRPCs(INFURA_API_KEY)
-    //         .reduce((obj, rpc) => (obj[rpc.chainId] = rpc.rpcUrl, obj), {});
-
-    //     // Create WalletConnect Provider
-    //     let provider = new WalletConnectProvider({
-    //         rpc: { ...RPCMapping },
-    //         chainId
-    //     });
-
-    //     //  Enable session (triggers QR Code modal)
-    //     await provider.enable();
-
-    //     // Get ethers provider and signer
-    //     let ethersProvider = new ethers.providers.Web3Provider(provider, "any");
-    //     let signer = ethersProvider.getSigner();
-
-    //     return {
-    //         provider: ethersProvider,
-    //         signer,
-    //         getNetwork: ethersProvider.getNetwork.bind(ethersProvider),
-    //         getAccounts: ethersProvider.listAccounts.bind(ethersProvider)
-    //     };
-    // }
+        return {
+            provider: ethersProvider,
+            signer,
+            getNetwork: ethersProvider.getNetwork.bind(ethersProvider),
+            getAccounts: ethersProvider.listAccounts.bind(ethersProvider)
+        };
+    }
 
     // // Setup of Polkadot configurations
     // private async PolkadotConnector() {
