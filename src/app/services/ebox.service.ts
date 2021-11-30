@@ -426,7 +426,7 @@ export class EboxService {
 
 
 
-  // Accept a box (TODO: finish this)
+  // Accept a box
   // State changing operation
   async acceptBox(box: AppBox, passphrase: string): Promise<void> {
 
