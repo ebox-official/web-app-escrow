@@ -40,10 +40,10 @@ export class SendComponent implements OnInit, AfterViewInit {
   @ViewChild("keepInputs") keepInputs;  
 
   mode;
-  cardTitle;
-  cardDescription;
 
   tokenDecimalBalance;
+  private tokenBalanceTimer;
+  private refreshRate = 450;
 
   private sendTokenNotFoundMessageShown = false;
   private requestTokenNotFoundMessageShown = false;
@@ -60,16 +60,6 @@ export class SendComponent implements OnInit, AfterViewInit {
   
   ngOnInit() {
     this.mode = this.route.snapshot.data.mode;
-    
-    // Assign title and description to the card
-    if (this.mode === ONE_WAY) {
-      this.cardTitle = "send";
-      this.cardDescription = "Safely send tokens through ebox.";
-    }
-    else if (this.mode === OTC_TRADE) {
-      this.cardTitle = "otc trade";
-      this.cardDescription = "Exchange tokens trustlessly through ebox.";
-    }
   }
 
   ngAfterViewInit() {
@@ -83,6 +73,44 @@ export class SendComponent implements OnInit, AfterViewInit {
         if (tokens.length)
           this.fieldsFromQueryParams(this.route.snapshot.queryParams);
       });
+  }
+
+  ngOnDestroy() {
+    this.stopTokenBalanceLoop();
+  }
+
+  // Start the loop for updating the decimal balance of a token
+  private startTokenBalanceLoop(address: string) {
+
+    // Stop the previously running loop
+    this.stopTokenBalanceLoop();
+
+    this.tokenBalanceTimer = setInterval(async () => {
+
+      // Get info, balance and allowance
+      let [
+        tokenInfo,
+        tokenWeiBalance
+      ] = [
+        await this.tokenSelector.getTokenInfo(address),
+        await this.eboxService.getTokenBalance(address)
+      ];
+
+      
+      this.tokenDecimalBalance = this.connection.
+        weiToDecimal(tokenWeiBalance, tokenInfo.decimals);
+    }, this.refreshRate);
+  }
+
+  private stopTokenBalanceLoop() {
+
+    // If there's no loop, then stop here
+    if (!this.tokenBalanceTimer) {
+      return;
+    }
+
+    clearInterval(this.tokenBalanceTimer);
+    this.tokenBalanceTimer = null;
   }
 
   // Called everytime the input fields are changed
@@ -148,18 +176,7 @@ export class SendComponent implements OnInit, AfterViewInit {
         // Reset as not loaded
         this.tokenDecimalBalance = null;
 
-        // Get info, balance and allowance
-        let [
-          tokenInfo,
-          tokenWeiBalance
-        ] = [
-          await this.tokenSelector.getTokenInfo(queryParams.sendTokenAddress),
-          await this.eboxService.getTokenBalance(queryParams.sendTokenAddress)
-        ];
-        
-        // Set (and show) his/her decimal balance to the user
-        this.tokenDecimalBalance = this.connection.
-          weiToDecimal(tokenWeiBalance, tokenInfo.decimals);
+        this.startTokenBalanceLoop(queryParams.sendTokenAddress);
       }
       else {
 

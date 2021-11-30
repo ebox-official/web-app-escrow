@@ -9,7 +9,7 @@
 
                 <label class="d-flex flex-column gap-2">
                     <div class="fw-bold">Select network</div>
-                    <select #selector class="form-select form-select-sm" aria-label=".form-select-sm example">
+                    <select #selector class="form-select form-select-sm">
                         <option *ngFor="let rpc of providersService.RPCs; index as i;" [value]="i">
                             {{ rpc.networkName }}
                         </option>

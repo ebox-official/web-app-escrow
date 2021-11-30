@@ -2,17 +2,32 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">choose network</h5>
+                <h5 class="modal-title">Polkadot - Choose account & network</h5>
                 <button type="button" class="btn-close" aria-label="Close" (click)="cancel();"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body d-grid gap-3">
 
-                Nothing to see here
+                <span>To connect to the Reef chain you need to pair your Polkadot address. If you didn't bind already, then follow the tutorial <a href="https://freddycorly.medium.com/create-your-reef-chain-account-6b06ad323c6" target="_blank">Create your Reef chain account</a></span>
+
+                <label class="d-flex flex-column gap-2">
+                    <div class="fw-bold">Select account</div>
+                    <select #accountSelector class="form-select form-select-sm">
+                        <option *ngFor="let a of data?.accounts" [value]="a.address">({{ a?.meta.name }}) {{ a.address }}</option>
+                    </select>
+                </label>
+
+                <label class="d-flex flex-column gap-2">
+                    <div class="fw-bold">Select network</div>
+                    <select #networkSelector class="form-select form-select-sm">
+                        <option value="wss://rpc-testnet.reefscan.com/ws;reef-testnet">Reef Testnet</option>
+                        <option value="wss://rpc.reefscan.com/ws;reef-mainnet">Reef Mainnet</option>
+                    </select>
+                </label>
 
             </div>
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-outline-secondary" (click)="cancel();">cancel</button>
-                <button type="button" class="btn btn-danger" (click)="confirm();">confirm</button>
+                <button type="button" class="btn btn-danger" (click)="confirm(accountSelector, networkSelector);">confirm</button>
             </div>
         </div>
     </div>

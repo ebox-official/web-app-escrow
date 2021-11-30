@@ -66,7 +66,7 @@ export class ProvidersService {
         FORTMATIC: this.FortmaticConnector,
         COINBASE: this.CoinbaseConnector,
         WALLETCONNECT: this.WalletConnectConnector,
-        // POLKADOT: this.PolkadotConnector
+        POLKADOT: this.PolkadotConnector
     };
 
     constructor(private ms: ModalsService) { }
@@ -215,84 +215,52 @@ export class ProvidersService {
         };
     }
 
-    // // Setup of Polkadot configurations
-    // private async PolkadotConnector() {
+    // Setup of Polkadot configurations
+    private async PolkadotConnector() {
 
-    //     // Return an array of all the injected sources
-    //     // (this needs to be called first)
-    //     let allInjected = await PolkadotExtensionDapp.web3Enable(APP_NAME);
-    //     let injected;
-    //     if (allInjected && allInjected[0] && allInjected[0].signer) {
-    //         injected = allInjected[0].signer;
-    //     }
+        // Return an array of all the injected sources
+        // (this needs to be called first)
+        let allInjected = await PolkadotExtensionDapp.web3Enable(APP_NAME);
+        let injected;
+        if (allInjected && allInjected[0] && allInjected[0].signer) {
+            injected = allInjected[0].signer;
+        }
 
-    //     // Return an array of { address, meta: { name, source } }
-    //     // (meta.source contains the name of the extension)
-    //     let allAccounts = await PolkadotExtensionDapp.web3Accounts();
-    //     let accountOpts = allAccounts
-    //         .map(acc => `<option value="${acc.address}">${acc.address}</option>`)
-    //         .join("");
+        // Return an array of { address, meta: { name, source } }
+        // (meta.source contains the name of the extension)
+        let accounts = await PolkadotExtensionDapp.web3Accounts();
 
-    //     // Spawn a modal and ask the user to which account to connect
-    //     let prompt = await new SmartPrompt();
+        let { account, rpcUrl, chainId } = await this.ms.
+            openWithPromise(this.ms.modals.POLKADOT_PROVIDER_MODAL, { accounts });
 
-    //     prompt.init({
-    //         figureColor: "#2d2f31",
-    //         groundColor: "#fafafa",
-    //         title: "Polkadot{.js} - Choose account & network",
-    //         template: `<div style="display: grid; grid-gap: 1rem;">
-    // <span>To connect to the Reef chain you need to pair your Polkadot address. If you didn't bind already, then follow the tutorial <a href="https://freddycorly.medium.com/create-your-reef-chain-account-6b06ad323c6" target="_blank">Create your Reef chain account</a></span>
-    // <div>
-    //     <p>
-    //         <label>Account</label>
-    //     </p>
-    //     <select name="account" required="true">
-    //         ${accountOpts}
-    //     </select>
-    // </div>
-    // <div>
-    //     <p>
-    //         <label>Network</label>
-    //     </p>
-    //     <select name="networkString" required="true">
-    //         <option value="wss://rpc-testnet.reefscan.com/ws;reef-testnet">Reef Testnet</option>
-    //         <option value="wss://rpc.reefscan.com/ws;reef-mainnet">Reef Mainnet</option>
-    //     </select>
-    // </div>
-    // </div>`
-    //     });
+        let provider = new ReefDefiEvmProvider.Provider({
+            provider: new PolkadotApi.WsProvider(rpcUrl)
+        });
 
-    //     let { account, networkString } = await prompt.spawn();
-    //     let [networkUrl, chainId] = networkString.split(";");
+        await provider.api.isReady;
 
-    //     let provider = new ReefDefiEvmProvider.Provider({
-    //         provider: new PolkadotApi.WsProvider(networkUrl)
-    //     });
+        let signer = new ReefDefiEvmProvider.Signer(
+            provider,
+            account,
+            injected
+        );
 
-    //     await provider.api.isReady;
+        if (!(await signer.isClaimed())) {
+            console.log(
+                "No claimed EVM account found -> claimed default EVM account: ",
+                await signer.getAddress()
+            );
+            await signer.claimDefaultAccount();
+        }
 
-    //     let signer = new ReefDefiEvmProvider.Signer(
-    //         provider,
-    //         account,
-    //         injected
-    //     );
+        let evmAddress = await signer.queryEvmAddress();
 
-    //     if (!(await signer.isClaimed())) {
-    //         console.log(
-    //             "No claimed EVM account found -> claimed default EVM account: ",
-    //             await signer.getAddress()
-    //         );
-    //         await signer.claimDefaultAccount();
-    //     }
-
-    //     let evmAddress = await signer.queryEvmAddress();
-
-    //     return {
-    //         provider,
-    //         signer,
-    //         getNetwork: () => ({ chainId }),
-    //         getAccounts: () => evmAddress
-    //     };
-    // }
+        return {
+            provider,
+            signer,
+            getNetwork: () => ({ chainId }),
+            getAccounts: () => evmAddress
+        };
+    }
 
 }

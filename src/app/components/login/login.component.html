@@ -45,12 +45,11 @@
                 <div class="position-absolute w-100">MetaMask Wallet</div>
             </button>
 
-            <button class="position-relative btn btn-important bg-body d-flex align-items-center" style="border-radius: 3rem; border: 2px dashed #888" disabled>
+            <button class="position-relative btn btn-important bg-body d-flex align-items-center" style="border-radius: 3rem;" (click)="connect('POLKADOT');">
                 <div class="wallet-icon-wrapper">
                     <img height="48" src="assets/img/polkadot.svg" alt="polkadot wallet logo">
                 </div>
                 <div class="position-absolute w-100">Polkadot</div>
-                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: #0008; border-radius: inherit;"></div>
             </button>
 
             <button class="position-relative btn btn-important bg-body d-flex align-items-center" style="border-radius: 3rem;" (click)="connect('WALLETCONNECT');">

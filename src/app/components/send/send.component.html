@@ -1,6 +1,14 @@
 <div class="d-none d-md-block custom-card-header card-header">
-    <h4 class="card-title">{{ cardTitle }}</h4>
-    <small class="card-text text-muted">{{ cardDescription }}</small>
+    <h4 class="card-title">{{
+        mode === ONE_WAY ?
+            "send" :
+            "otc trade"
+    }}</h4>
+    <small class="card-text text-muted">{{
+        mode === ONE_WAY ?
+            "Safely send tokens through ebox." :
+            "Exchange tokens trustlessly through ebox."
+    }}</small>
 </div>
 
 <form #form class="custom-card-body position-relative card-body" (submit)="$event.preventDefault(); send();" ngNativeValidate>

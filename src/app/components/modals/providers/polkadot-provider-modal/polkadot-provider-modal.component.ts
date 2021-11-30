@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { ProvidersService } from 'src/app/services/connection/providers.service';
 
 @Component({
   selector: 'app-polkadot-provider-modal',
@@ -17,17 +16,19 @@ export class PolkadotProviderModalComponent implements OnInit, AfterViewInit {
   }
   // /modals service stuff
 
-  constructor(providersService: ProvidersService) { }
+  constructor() { }
 
   ngOnInit(): void {
   }
 
-  confirm() {
-    this.service.resolve(true);
+  confirm(accountSelector, networkSelector) {
+    let account = accountSelector.value;
+    let [ rpcUrl, chainId ] = networkSelector.value.split(";");
+    this.service.resolve({ account, rpcUrl, chainId });
   }
 
   cancel() {
-    this.service.resolve(false);
+    this.service.reject("User rejected.");
   }
 
 }
