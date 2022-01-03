@@ -90,6 +90,9 @@ export class EboxService {
           this.dappContractAddress = ETHBOX.ADDRESSES.MATIC_TESTNET;
           this.tokenDispenserContractAddress = TOKEN_DISPENSER.ADDRESSES.MATIC_TESTNET;
           break;
+        case "1285":        // Moonriver Mainnet
+          this.dappContractAddress = ETHBOX.ADDRESSES.MOONRIVER;
+          break;
         default:
           this.reset();
           throw new Error("Network not recognized.");

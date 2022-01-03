@@ -1571,6 +1571,17 @@ let REEF_TESTNET: Token[] = [
   }
 ];
 
+let MOONRIVER_MAINNET: Token[] = [
+  {
+    "name": "Moonriver",
+    "symbol": "MOVR",
+    "thumb": "https://assets.coingecko.com/coins/images/17984/small/9285.png?1630028620",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18,
+    "isBase": true
+  }
+];
+
 let chainTokenDict = {
   1: ETHEREUM_MAINNET,
   4: ETHEREUM_TESTNET,
@@ -1579,7 +1590,8 @@ let chainTokenDict = {
   137: MATIC_MAINNET,
   80001: MATIC_TESTNET,
   "reef-mainnet": REEF_MAINNET,
-  "reef-testnet": REEF_TESTNET
+  "reef-testnet": REEF_TESTNET,
+  1285: MOONRIVER_MAINNET
 };
 
 export {

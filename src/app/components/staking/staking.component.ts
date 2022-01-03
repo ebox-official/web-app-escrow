@@ -16,14 +16,17 @@ export class StakingComponent implements OnInit {
   monthsNames = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   ];
+  pageYear;
   pageMonth;
   userRewardsObject;
   userPayout;
   userRewardsFromContract;
 
   private numberOfDaysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  private minYear;
   private minMonth;
   private minDate;
+  private maxYear;
   private maxMonth;
   private maxDate;
   private fetchedRewards;
@@ -38,11 +41,15 @@ export class StakingComponent implements OnInit {
 
     let dateLimits = await this.stakingService.getDateLimits();
 
+    this.minYear = dateLimits.min_year;
     this.minMonth = dateLimits.min_month - 1;
     this.minDate = +dateLimits.min_day;
+
+    this.maxYear = dateLimits.max_year;
     this.maxMonth = dateLimits.max_month - 1;
     this.maxDate = +dateLimits.max_day;
 
+    this.pageYear = this.maxYear;
     this.pageMonth = this.maxMonth;
     this.pageDate = this.maxDate;
 
@@ -65,11 +72,16 @@ export class StakingComponent implements OnInit {
 
   async previous() {
 
-    if (this.pageDate <= this.minDate && this.pageMonth <= this.minMonth) {
+    // If current date is at its minimum, then return
+    if (this.pageYear <= this.minYear
+     && this.pageMonth <= this.minMonth
+     && this.pageDate <= this.minDate) {
       return;
     }
+
     if (this.pageDate < 2) {
       if (this.pageMonth == 0) {
+        this.pageYear--;
         this.pageMonth = this.monthsNames.length - 1;
       }
       else {
@@ -85,11 +97,16 @@ export class StakingComponent implements OnInit {
 
   async next() {
 
-    if (this.pageDate >= this.maxDate && this.pageMonth >= this.maxMonth) {
+    // If current date is at its maximum, then return
+    if (this.pageYear >= this.maxYear
+     && this.pageMonth >= this.maxMonth
+     && this.pageDate >= this.maxDate) {
       return;
     }
+
     if (this.pageDate == this.numberOfDaysInMonths[this.pageMonth]) {
       if (this.pageMonth == this.monthsNames.length - 1) {
+        this.pageYear++;
         this.pageMonth = 0;
       }
       else {
@@ -105,7 +122,7 @@ export class StakingComponent implements OnInit {
 
   private async fetchRewards() {
 
-    let results = await this.stakingService.getData(this.pageMonth, this.pageDate);
+    let results = await this.stakingService.getData(this.pageYear, this.pageMonth, this.pageDate);
     this.fetchedRewards = results
       .map(result => ({
         ...result,

@@ -15,17 +15,18 @@ export class StakingService {
   async getDateLimits() {
 
     let payload = new FormData();
-    payload.append("action", "get_date_limits");
+    payload.append("action", "get_date_limits_new");
 
     let response = await fetch(this.fetchDataEndpoint, { method: "POST", body: payload });
     let { data } = await response.json();
     return data;
   }
 
-  async getData(pageMonth, pageDate) {
+  async getData(pageYear, pageMonth, pageDate) {
 
     let payload = new FormData();
-    payload.append("action", "get_data");
+    payload.append("action", "get_data_new");
+    payload.append("year", pageYear);
     payload.append("month", pageMonth + 1);
     payload.append("day", pageDate);
 

@@ -186,6 +186,12 @@ export class ConnectionService {
           thumb: "https://assets.coingecko.com/coins/images/4713/thumb/matic___polygon.jpg",
           accountScannerUrl: (address) => `https://mumbai.polygonscan.com/address/${address}`
         };
+      case "1285":
+        return {
+          name: "Moonriver Mainnet",
+          thumb: "https://assets.coingecko.com/coins/images/17984/small/9285.png?1630028620",
+          accountScannerUrl: (address) => `https://moonriver.moonscan.io/address/${address}`
+        };
       default:
         return {
           name: this.NOT_SUPPORTED,
