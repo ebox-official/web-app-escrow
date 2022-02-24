@@ -19,6 +19,7 @@ export class BoxDetailsComponent implements OnInit {
 
   locationHref = window.location.href;
   mode;
+  typeOfBox;
   box;
 
   constructor(
@@ -30,11 +31,16 @@ export class BoxDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.mode = this.route.snapshot.data.mode;
-    let boxId = this.route.snapshot.paramMap.get("boxId");
+    this.typeOfBox = this.route.snapshot.data.typeOfBox;
+    const boxId = this.route.snapshot.paramMap.get("boxId");
+
     this.eboxService['boxes_' + this.mode + '$']
       .subscribe(boxes => {
         if (boxes)
-          this.box = boxes.find(b => b.id === boxId) || null;
+          this.box = boxes
+            .filter(b => b.isPrivate === (this.typeOfBox === "private"))
+            .find(b => b.id === boxId)
+            || null;
       });
   }
 
