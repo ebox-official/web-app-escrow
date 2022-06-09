@@ -1,7 +1,6 @@
+# Angular compiler version
 
-## Angular compiler version
-
-This project was generated with Angular CLI version 12.2.0.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.0.
 
 ## Package manager and installation
 
