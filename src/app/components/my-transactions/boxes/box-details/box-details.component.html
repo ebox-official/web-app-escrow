@@ -1,12 +1,12 @@
 <div class="custom-card-header card-header">
     <div class="d-none d-md-block mb-3">
-        <h4 class="card-title">box details</h4>
+        <h4 class="card-title">Box Details</h4>
         <small class="card-text text-muted">A box you've {{ mode === "incoming" ? "received" : "sent" }}.</small>
     </div>
     <a
         class="link-unstyled ms-auto ctrl-arrow-sx"
         [routerLink]="(typeOfBox === 'private') ? '../..' : '..'">
-        Back {{ mode }}
+        Back
     </a>
 </div>
 
@@ -27,8 +27,8 @@
                                 "Received" :
                                 "Receive" :
                             box.status === COMPLETE ?
-                                "Given" :
-                                "Give"
+                                "Sent" :
+                                "Send"
                     }}</div>
                     <img height="32" [src]="box.sendTokenInfo.thumb" [alt]="box.sendTokenInfo.symbol" onerror="this.src='assets/img/unknown-icon.png'">
                     <div>{{ box.sendValueDecimal | multiplierFormatter }} {{ box.sendTokenInfo.symbol }}</div>
@@ -38,8 +38,8 @@
                     <div class="fw-bold">{{
                         mode === "incoming" ?
                             box.status === COMPLETE ?
-                                "Given" :
-                                "Give" :
+                                "Sent" :
+                                "Send" :
                             box.status === COMPLETE ?
                                 "Received" :
                                 "Receive"
@@ -79,8 +79,8 @@
                                     "Received" :
                                     "Receive" :
                                 box.status === COMPLETE ?
-                                    "Given" :
-                                "Give"
+                                    "Sent" :
+                                    "Send"
                         }} exactly
                     </div>
                     <div class="fs-4" style="margin-bottom: -8px;">
@@ -112,8 +112,8 @@
                         {{
                             mode === "incoming" ?
                                 box.status === COMPLETE ?
-                                    "Given" :
-                                    "Give" :
+                                    "Sent" :
+                                    "Send" :
                                 box.status === COMPLETE ?
                                     "Received" :
                                     "Receive"
@@ -174,7 +174,7 @@
                 <!-- unbox -->
                 <ng-container *ngIf="mode === 'incoming'">
                     <div *ngIf="box.passHashHash" class="input-group">
-                        <button class="btn btn-primary" type="button" [disabled]="eboxService.doubleHash(passphrase.value) !== box.passHashHash" (click)="unbox(passphrase.value);">unbox</button>
+                        <button class="btn btn-primary" type="button" [disabled]="eboxService.doubleHash(passphrase.value) !== box.passHashHash" (click)="unbox(passphrase.value);">Retrieve</button>
                         <button type="button" style="right: .2rem; z-index: 9;" class="position-absolute top-50 translate-middle-y btn btn-dark btn-sm rounded-circle" appPasswordToggler [myToggleTarget]="passphrase"><i class="bi bi-eye-fill"></i></button>
                         <input #passphrase type="password" class="form-control" placeholder="Enter passphrase to unbox" [disabled]="eboxService.doubleHash(passphrase.value) === box.passHashHash">
                     </div>
@@ -182,7 +182,7 @@
                 <!-- /unbox -->
     
                 <!-- cancel -->
-                <button *ngIf="mode === 'outgoing'" class="btn btn-primary" (click)="$event.stopPropagation(); eboxService.cancelBox(box);">cancel transaction</button>
+                <button *ngIf="mode === 'outgoing'" class="btn btn-primary" (click)="$event.stopPropagation(); eboxService.cancelBox(box);">Cancel Transaction</button>
                 <!-- /cancel -->
 
             </div>

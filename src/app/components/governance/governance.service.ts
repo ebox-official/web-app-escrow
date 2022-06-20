@@ -122,8 +122,12 @@ export class GovernanceService {
     }
 
     let response = await fetch(this.endpoint, { method: "POST", body: payload });
-    let { data } = await response.json();
-    return data;
+	let json = await response.json();
+
+	if (json.error === "Results not verified yet")
+		return [];
+		
+    return json.data;
   }
 
   async getVoters(votingNumber: string, mode: string) {
@@ -143,8 +147,7 @@ export class GovernanceService {
 
   async vote(votingNumber: string, voteIndex: string) {
 
-    let response: any = await this.connection.signMessage(`ethbox Vote #${votingNumber}`);
-    let signedMessage = response.result;
+    let signedMessage = await this.connection.signMessage(`ethbox Vote #${votingNumber}`);
 
     let payload = new FormData();
     payload.append("action", "cast_vote");

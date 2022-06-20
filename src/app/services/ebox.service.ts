@@ -96,6 +96,9 @@ export class EboxService {
         case "1285":        // Moonriver Mainnet
           this.dappContractAddress = ETHBOX.ADDRESSES.MOONRIVER;
           break;
+        case "10":          // Optimism Mainnet
+          this.dappContractAddress = ETHBOX.ADDRESSES.OPTIMISM;
+          break;
         default:
           this.reset();
           throw new Error("Network not recognized.");

@@ -2,13 +2,13 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">contacts</h5>
+                <h5 class="modal-title">Contacts</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="p-3 text-center">
                 <button class="mb-3 btn btn-primary" (click)="createContact();">
                     Add new
-                    <i class="bi bi-person-plus-fill"></i>
+                    &nbsp;<i class="bi bi-person-plus-fill"></i>
                 </button>
                 <div class="form-floating">
                     <input #search ngModel type="search" class="form-control" id="contact-search" placeholder="Search">
@@ -37,7 +37,7 @@
             </div>
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-primary" (click)="confirmContact()"
-                    [disabled]="!selectedContact">confirm</button>
+                    [disabled]="!selectedContact">Confirm</button>
             </div>
         </div>
     </div>

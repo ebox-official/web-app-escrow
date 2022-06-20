@@ -16,6 +16,7 @@ export class VotingDetailsComponent implements OnInit {
   votingId;
   voting;
   disabled = true;
+  voted = false;
 
   now = this.governanceService.getUTCTime(new Date());
   timer;
@@ -90,7 +91,7 @@ export class VotingDetailsComponent implements OnInit {
     ]);
 
     // If the user has voted, then check his/her choice
-    if (hasVoted) {
+    if ((votingDetails.length != 0) && hasVoted) {
       let vote = votingDetails.
         find(vd => {
           let userAddress = this.connection.selectedAccount$.getValue();
@@ -107,6 +108,7 @@ export class VotingDetailsComponent implements OnInit {
 
     // Check if the user can vote
     this.disabled = !isEligible || hasVoted || this.voting.status !== LIVE;
+	this.voted = hasVoted;
   }
 
   private updateNow() {

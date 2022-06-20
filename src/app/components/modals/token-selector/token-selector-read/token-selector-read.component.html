@@ -2,13 +2,13 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">tokens</h5>
+                <h5 class="modal-title">Tokens</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="p-3 text-center">
                 <button class="mb-3 btn btn-primary" (click)="addToken();">
                     Add new
-                    <i class="bi bi-plus-circle-fill"></i>
+                    &nbsp;<i class="bi bi-plus-circle-fill"></i>
                 </button>
                 <div class="form-floating">
                     <input #search ngModel type="search" class="form-control" id="contact-search" placeholder="Search">
@@ -63,7 +63,7 @@
             </div>
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-primary" (click)="confirmToken()"
-                    [disabled]="!selectedToken">confirm</button>
+                    [disabled]="!selectedToken">Confirm</button>
             </div>
         </div>
     </div>

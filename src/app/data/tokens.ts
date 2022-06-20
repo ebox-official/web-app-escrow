@@ -10,9 +10,9 @@ let ETHEREUM_MAINNET: Token[] = [
       "isBase": true
   },
   {
-      "name": "Ethbox Token",
+      "name": "ebox Token",
       "symbol": "ebox",
-      "thumb": "https://assets.coingecko.com/coins/images/14528/thumb/ethbox.PNG",
+      "thumb": "https://assets.coingecko.com/coins/images/14528/small/ebox.png",
       "address": "0x33840024177A7DacA3468912363BeD8b425015c5",
       "decimals": 18
   },
@@ -753,11 +753,11 @@ let BINANCE_MAINNET: Token[] = [
     "isBase": true
   },
   {
-    "name": "Ethbox Token",
-    "symbol": "ebox",
-    "thumb": "https://assets.coingecko.com/coins/images/14528/thumb/ethbox.PNG",
-    "address": "0x33840024177a7daca3468912363bed8b425015c5",
-    "decimals": 18
+	"name": "ebox Token",
+	"symbol": "ebox",
+	"thumb": "https://assets.coingecko.com/coins/images/14528/small/ebox.png",
+	"address": "0x33840024177A7DacA3468912363BeD8b425015c5",
+	"decimals": 18
   },
   {
     "name": "Wrapped BNB",
@@ -1573,7 +1573,7 @@ let REEF_TESTNET: Token[] = [
 
 let MOONBEAM_MAINNET: Token[] = [
   {
-    "name": "Moonbeam",
+    "name": "Glimmer",
     "symbol": "GLMR",
     "thumb": "https://assets.coingecko.com/coins/images/22459/small/glmr.png",
     "address": "0x0000000000000000000000000000000000000000",
@@ -1593,6 +1593,17 @@ let MOONRIVER_MAINNET: Token[] = [
   }
 ];
 
+let OPTIMISM_MAINNET: Token[] = [
+	{
+	  "name": "Ethereum",
+	  "symbol": "ETH",
+	  "thumb": "https://assets.coingecko.com/coins/images/279/thumb/ethereum.png",
+	  "address": "0x0000000000000000000000000000000000000000",
+	  "decimals": 18,
+	  "isBase": true
+	}
+  ];
+
 let chainTokenDict = {
   1: ETHEREUM_MAINNET,
   4: ETHEREUM_TESTNET,
@@ -1603,7 +1614,8 @@ let chainTokenDict = {
   "reef-mainnet": REEF_MAINNET,
   "reef-testnet": REEF_TESTNET,
   1284: MOONBEAM_MAINNET,
-  1285: MOONRIVER_MAINNET
+  1285: MOONRIVER_MAINNET,
+  10: OPTIMISM_MAINNET
 };
 
 export {

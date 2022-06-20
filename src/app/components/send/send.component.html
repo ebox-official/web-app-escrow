@@ -4,8 +4,8 @@
         <div class="d-none d-md-block pb-3">
             <h4 class="card-title">{{
                 mode === ONE_WAY ?
-                    "send" :
-                    "otc trade"
+                    "Send" :
+                    "OTC Trade"
             }}</h4>
             <small class="card-text text-muted">{{
                 mode === ONE_WAY ?
@@ -107,7 +107,7 @@
                         <div *ngIf="mode === ONE_WAY" class="d-grid" style="grid-template-columns: auto max-content; align-items: center;">
                             <div>
                                 <label class="form-check-label d-block fw-bolder" for="privacy-mode">Privacy mode</label>
-                                <small class="text-muted">Little explanation on what privacy mode is.<br>What does it do specifically and all that.</small>
+                                <small class="text-muted">Encrypts addresses before transmitting into the internet and storing on the blockchain.</small>
                             </div>
                             <div class="form-check form-switch">
             
@@ -120,7 +120,7 @@
                         <div class="d-grid" style="grid-template-columns: auto max-content; align-items: center;">
                             <div>
                                 <label class="form-check-label d-block fw-bolder" for="keep-inputs">Keep inputs after sending</label>
-                                <small class="text-muted">Little explanation on what privacy mode is.<br>What does it do specifically and all that.</small>
+                                <small class="text-muted">Does not clear the input boxes after sending. Useful for multiple consecutive transactions.</small>
                             </div>
                             <div class="form-check form-switch">
             
@@ -133,7 +133,7 @@
                     </div>
                 </div>
             
-                <button type="submit" class="btn btn-primary mt-3">send</button>
+                <button type="submit" class="btn btn-primary mt-3">Send</button>
             </div>
         
         

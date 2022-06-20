@@ -91,7 +91,7 @@ export class ConnectionService {
           <div class="position-fixed top-0 start-0 w-100 h-100" style="z-index: 99999; background-color: #000d;">
             <div class="position-absolute bottom-0 w-100 px-3 py-5 bg-danger text-white text-center text-lg-start">
               <div class="display-6">Unsupported network!</div>
-              <div class="fs-4">We are currently live on Ethereum, Binance Smart Chain, Polygon, Reef Chain, Moonbeam &amp; Moonriver (Testnets: Rinkeby, BSC, Polygon).</div>
+              <div class="fs-4">We are currently live on Ethereum, Binance Smart Chain, Polygon, Reef Chain, Moonbeam, Moonriver &amp; Optimism (Testnets: Rinkeby, BSC, Polygon, Reef).</div>
           </div>
         `;
         document.body.appendChild(div.firstElementChild);
@@ -116,8 +116,7 @@ export class ConnectionService {
 
     let signature;
     try {
-      signature = await this.signer$.getValue().
-        signMessage(message);
+      signature = await this.signer$.getValue().signMessage(message);
     }
     catch (err) {
       this.toasterService.addToaster({
@@ -197,6 +196,12 @@ export class ConnectionService {
           name: "Moonriver",
           thumb: "https://assets.coingecko.com/coins/images/17984/small/9285.png",
           accountScannerUrl: (address) => `https://moonriver.moonscan.io/address/${address}`
+        };
+      case "10":
+        return {
+          name: "Optimism",
+          thumb: "https://assets.coingecko.com/coins/images/25244/small/OP.jpeg",
+          accountScannerUrl: (address) => `https://optimistic.etherscan.io/address/${address}`
         };
       default:
         return {

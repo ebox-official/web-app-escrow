@@ -2,13 +2,13 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">choose networks</h5>
+                <h5 class="modal-title">Choose Network</h5>
                 <button type="button" class="btn-close" aria-label="Close" (click)="cancel();"></button>
             </div>
             <div class="modal-body py-4">
 
                 <label class="d-flex flex-column gap-2">
-                    <div class="fw-bold">Select network</div>
+                    <div class="fw-bold">Select Network</div>
                     <select #selector class="form-select form-select-sm">
                         <option *ngFor="let rpc of providersService.RPCs; index as i;" [value]="i">
                             {{ rpc.networkName }}
@@ -18,8 +18,8 @@
 
             </div>
             <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-outline-secondary" (click)="cancel();">cancel</button>
-                <button type="button" class="btn btn-danger" (click)="confirm(selector);">confirm</button>
+                <button type="button" class="btn btn-outline-secondary" (click)="cancel();">Cancel</button>
+                <button type="button" class="btn btn-danger" (click)="confirm(selector);">Confirm</button>
             </div>
         </div>
     </div>

@@ -30,32 +30,47 @@ export class ProvidersService {
         {
             rpcUrl: "https://mainnet.infura.io/v3/" + INFURA_API_KEY,
             chainId: 1,
-            networkName: "Ethereum Mainnet"
+            networkName: "Ethereum"
         },
         {
             rpcUrl: "https://rinkeby.infura.io/v3/" + INFURA_API_KEY,
             chainId: 4,
-            networkName: "Ethereum Testnet"
+            networkName: "Rinkeby Testnet"
         },
         {
             rpcUrl: "https://bsc-dataseed.binance.org/",
             chainId: 56,
-            networkName: "Binance Mainnet"
+            networkName: "Binance Smart Chain"
         },
         {
             rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545/",
             chainId: 97,
-            networkName: "Binance Testnet"
+            networkName: "BSC Testnet"
         },
         {
             rpcUrl: "https://rpc-mainnet.maticvigil.com/",
             chainId: 187,
-            networkName: "Polygon Mainnet"
+            networkName: "Polygon"
         },
         {
             rpcUrl: "https://rpc-mumbai.matic.today/",
             chainId: 80001,
             networkName: "Polygon Testnet"
+        },
+        {
+            rpcUrl: "https://rpc.api.moonbeam.network",
+            chainId: 1284,
+            networkName: "Moonbeam"
+        },
+        {
+            rpcUrl: "https://rpc.api.moonriver.moonbeam.network",
+            chainId: 1285,
+            networkName: "Moonriver"
+        },
+        {
+            rpcUrl: "https://mainnet.optimism.io/",
+            chainId: 10,
+            networkName: "Optimism"
         }
     ];
 

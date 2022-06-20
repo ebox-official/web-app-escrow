@@ -1,12 +1,12 @@
 <nav class="main-component-nav">
-    <a class="bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['send']">send</a>
-    <a class="bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['otc']">otc trade</a>
+    <a class="bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['send']">Send</a>
+    <a class="bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['otc']">OTC Trade</a>
 
     <!-- visible only after md -->
-    <a class="d-none d-md-inline bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['transactions']">my transactions</a>
+    <a class="d-none d-md-inline bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['transactions']">Transactions</a>
     <ng-container *ngIf="!isTestnet()">
-        <a class="d-none d-md-inline bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['governance']">governance</a>
-        <a class="d-none d-md-inline bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['staking']">staking</a>
+        <a class="d-none d-md-inline bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['governance']">Governance</a>
+        <a class="d-none d-md-inline bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['staking']">Staking</a>
     </ng-container>
 
     <ng-container *ngIf="isTestnet()">
@@ -30,9 +30,9 @@
     <ul class="dropdown-menu" aria-labelledby="my-dropup" data-popper-placement="top-start" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate(0px, -40px);">
         <li><h6 class="dropdown-header">Other</h6></li>
 
-        <li><a class="dropdown-item" routerLinkActive="active" #myTransaction="routerLinkActive" [routerLink]="['transactions']">my transactions</a></li>
-        <li [class.d-none]="isTestnet()"><a class="dropdown-item" routerLinkActive="active" #governance="routerLinkActive" [routerLink]="['governance']">governance</a></li>
-        <li [class.d-none]="isTestnet()"><a class="dropdown-item" routerLinkActive="active" #staking="routerLinkActive" [routerLink]="['staking']">staking</a></li>
+        <li><a class="dropdown-item" routerLinkActive="active" #myTransaction="routerLinkActive" [routerLink]="['transactions']">Transactions</a></li>
+        <li [class.d-none]="isTestnet()"><a class="dropdown-item" routerLinkActive="active" #governance="routerLinkActive" [routerLink]="['governance']">Governance</a></li>
+        <li [class.d-none]="isTestnet()"><a class="dropdown-item" routerLinkActive="active" #staking="routerLinkActive" [routerLink]="['staking']">Staking</a></li>
 
         <ng-container *ngIf="isTestnet()">
             <li><hr class="dropdown-divider"></li>
