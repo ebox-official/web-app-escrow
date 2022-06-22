@@ -8,7 +8,7 @@
     <app-loading id="staking"></app-loading>
 
     <div class="d-flex flex-column gap-4">
-        <div class="d-flex flex-column gap-2">
+        <!-- <div class="d-flex flex-column gap-2">
             <small>Select the network you wish to claim on, either Binance Smart Chain or Ethereum</small>
             <div class="d-inline-flex gap-2">
                 <label for="net-switch" [class.active]="!netChoiceCheck.checked">BSC</label>
@@ -17,89 +17,116 @@
                 </div>
                 <label for="net-switch" [class.active]="netChoiceCheck.checked">ETH</label>
             </div>
-        </div>
-    
-        <div class="d-flex justify-content-between align-items-center">
-            <span class="fw-bold">
-                Date
-                <i class="bi bi-info-circle-fill pointer" appBsTooltip data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="The date reflects the information collected by the system up to a particular day in order to provide an estimation of the rewards."></i>
-            </span>
-            <nav>
-                <ul class="pagination pagination-sm mb-0">
-                    <li class="page-item">
-                        <a href="#" href="javascript:void(0)" aria-label="Previous" class="page-link" (click)="previous();">
-                            <span>«</span>
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a href="javascript:void(0)" class="page-link">20{{ pageYear }} {{ monthsNames[pageMonth] }} {{ pageDate }}</a>
-                    </li>
-                    <li class="page-item">
-                        <a href="#" href="javascript:void(0)" aria-label="Next" class="page-link" (click)="next();">
-                            <span>»</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    
-        <div class="d-flex flex-column gap-1">
+        </div> -->
+
+		<div class="d-flex flex-column gap-1">
             <div class="d-flex justify-content-between align-items-center">
-                <span class="fw-bold">Balance</span>
-                <span class="me-3">{{ userRewardsObject?.balance | currencyFormatter }} EBOX</span>
+                <span class="fw-bold">Claiming Chain</span>
+				<div class="d-inline-flex gap-2">
+					<label for="net-switch" [class.active]="!netChoiceCheck.checked">Binance Smart Chain</label>
+					<div class="form-check form-switch">
+						<input #netChoiceCheck class="custom-switch form-check-input" type="checkbox" id="net-switch" style="margin-left: -2.75em;" (input)="stakingService.changeChainRewards(netChoiceCheck)">
+					</div>
+					<label for="net-switch" [class.active]="netChoiceCheck.checked">Ethereum</label>
+				</div>
             </div>
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="fw-bold">Reward</span>
-                <span class="me-3">{{ userRewardsObject?.reward | currencyFormatter }} EBOX</span>
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="fw-bold">Payout</span>
-                <span class="me-3">{{ userPayout | currencyFormatter }} EBOX</span>
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="fw-bold">APY</span>
-                <span class="me-3">{{ userRewardsObject?.apy }}%</span>
-            </div>
-        </div>
-    
-        <div class="d-flex flex-column gap-1">
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="fw-bold">
-                    DuckDAO Bonus
-                    <i class="bi bi-info-circle-fill pointer" appBsTooltip data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="A special bonus for DuckDAO members which grants + 20% to your calculated share rate. Requires 200 DDIM or 20,000 DUCK in the staking wallet."></i>
-                </span>
-                <div class="me-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" [checked]="userRewardsObject?.bonus_duck === '1' ? 'checked' : ''" disabled>
-                    </div>
-                </div>
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="fw-bold">
-                    Liquidity Provider Bonus
-                    <i class="bi bi-info-circle-fill pointer" appBsTooltip data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="When locking 5,000 EBOX or above for liquidity, users get an extra +20% share rate."></i>
-                </span>
-                <div class="me-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" [checked]="userRewardsObject?.bonus_lp === '1' ? 'checked' : ''" disabled>
-                    </div>
-                </div>
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="fw-bold">
-                    Long-term Holder
-                    <i class="bi bi-info-circle-fill pointer" appBsTooltip data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Our long-term supporters will be rewarded with an extra bonus that even grows with time:<br><br><ul><li>Month 2: +5% share rate</li><li>Month 3: +10% share rate</li><li>Month 4: +15% share rate</li><li>Month 5: +20% share rate</li><li>Month 6: +25% share rate</li><li>Month 7: +30% share rate</li><li>Month 8: +35% share rate</li><li>Month 9: +40% share rate</li><li>Month 10: +50% share rate</li></ul>" data-bs-html="true"></i>
-                </span>
-                <span class="me-3">{{ userRewardsObject?.bonus_long_term_months }} months</span>
-            </div>
+
+			<small><i>Claiming chain affects future rewards only. All your upcoming staking rewards will be distributed to the selected chain.</i></small>
         </div>
 
-        <button class="btn btn-primary" (click)="claimRewards();"
-        [disabled]="
-            (!userRewardsFromContract || +userRewardsFromContract === 0) ?
-                'disabled' :
-                ''
-        ">Claim {{ userRewardsFromContract | currencyFormatter }} EBOX</button>
+		<ng-container *ngIf="!isStakingChain()">
+
+			<div class="d-flex flex-column gap-1">
+				Please connect to Ethereum or BSC to view your staking rewards!
+			</div>
+
+		</ng-container>
+    
+		<ng-container *ngIf="isStakingChain()">
+
+			<div class="d-flex justify-content-between align-items-center">
+				<span class="fw-bold">
+					Date
+					<i class="bi bi-info-circle-fill pointer" appBsTooltip data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="The date reflects the information collected by the system up to a particular day in order to provide an estimation of the rewards."></i>
+				</span>
+				<nav>
+					<ul class="pagination pagination-sm mb-0">
+						<li class="page-item">
+							<a href="#" href="javascript:void(0)" aria-label="Previous" class="page-link" (click)="previous();">
+								<span>«</span>
+							</a>
+						</li>
+						<li class="page-item">
+							<a href="javascript:void(0)" class="page-link">20{{ pageYear }} {{ monthsNames[pageMonth] }} {{ pageDate }}</a>
+						</li>
+						<li class="page-item">
+							<a href="#" href="javascript:void(0)" aria-label="Next" class="page-link" (click)="next();">
+								<span>»</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		
+			<div class="d-flex flex-column gap-1">
+				<div class="d-flex justify-content-between align-items-center">
+					<span class="fw-bold">Balance</span>
+					<span class="me-3">{{ userRewardsObject?.balance | currencyFormatter }} EBOX</span>
+				</div>
+				<div class="d-flex justify-content-between align-items-center">
+					<span class="fw-bold">Reward</span>
+					<span class="me-3">{{ userRewardsObject?.reward | currencyFormatter }} EBOX</span>
+				</div>
+				<div class="d-flex justify-content-between align-items-center">
+					<span class="fw-bold">Payout</span>
+					<span class="me-3">{{ userPayout | currencyFormatter }} EBOX</span>
+				</div>
+				<div class="d-flex justify-content-between align-items-center">
+					<span class="fw-bold">APY</span>
+					<span class="me-3">{{ userRewardsObject?.apy }}%</span>
+				</div>
+			</div>
+		
+			<div class="d-flex flex-column gap-1">
+				<div class="d-flex justify-content-between align-items-center">
+					<span class="fw-bold">
+						DuckDAO Bonus
+						<i class="bi bi-info-circle-fill pointer" appBsTooltip data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="A special bonus for DuckDAO members which grants + 20% to your calculated share rate. Requires 200 DDIM or 20,000 DUCK in the staking wallet."></i>
+					</span>
+					<div class="me-3">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" [checked]="userRewardsObject?.bonus_duck === '1' ? 'checked' : ''" disabled>
+						</div>
+					</div>
+				</div>
+				<div class="d-flex justify-content-between align-items-center">
+					<span class="fw-bold">
+						Liquidity Provider Bonus
+						<i class="bi bi-info-circle-fill pointer" appBsTooltip data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="When locking 5,000 EBOX or above for liquidity, users get an extra +20% share rate."></i>
+					</span>
+					<div class="me-3">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" [checked]="userRewardsObject?.bonus_lp === '1' ? 'checked' : ''" disabled>
+						</div>
+					</div>
+				</div>
+				<div class="d-flex justify-content-between align-items-center">
+					<span class="fw-bold">
+						Long-term Holder
+						<i class="bi bi-info-circle-fill pointer" appBsTooltip data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Our long-term supporters will be rewarded with an extra bonus that even grows with time:<br><br><ul><li>Month 2: +5% share rate</li><li>Month 3: +10% share rate</li><li>Month 4: +15% share rate</li><li>Month 5: +20% share rate</li><li>Month 6: +25% share rate</li><li>Month 7: +30% share rate</li><li>Month 8: +35% share rate</li><li>Month 9: +40% share rate</li><li>Month 10: +50% share rate</li></ul>" data-bs-html="true"></i>
+					</span>
+					<span class="me-3">{{ userRewardsObject?.bonus_long_term_months }} months</span>
+				</div>
+			</div>
+
+			<button class="btn btn-primary" (click)="claimRewards();"
+			[disabled]="
+				(!userRewardsFromContract || +userRewardsFromContract === 0) ?
+					'disabled' :
+					''
+			">Claim {{ userRewardsFromContract | currencyFormatter }} EBOX</button>
+
+		</ng-container>
     </div>
 
 

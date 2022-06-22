@@ -4,13 +4,11 @@
 
     <!-- visible only after md -->
     <a class="d-none d-md-inline bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['transactions']">Transactions</a>
-    <ng-container *ngIf="!isTestnet()">
-        <a class="d-none d-md-inline bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['governance']">Governance</a>
-        <a class="d-none d-md-inline bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['staking']">Staking</a>
-    </ng-container>
+    <a class="d-none d-md-inline bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['governance']">Governance</a>
+    <a class="d-none d-md-inline bg-body border link-unstyled" routerLinkActive="active" [routerLink]="['staking']">Staking</a>
 
     <ng-container *ngIf="isTestnet()">
-        <button class="btn d-none d-md-inline bg-body border mt-4"
+        <button class="btn d-none d-md-inline bg-body border mt-3"
             (click)="eboxService.giveTestToken('AAA', 0);"
         >Get 100 AAA</button>
         <button class="btn d-none d-md-inline bg-body border"
@@ -31,8 +29,8 @@
         <li><h6 class="dropdown-header">Other</h6></li>
 
         <li><a class="dropdown-item" routerLinkActive="active" #myTransaction="routerLinkActive" [routerLink]="['transactions']">Transactions</a></li>
-        <li [class.d-none]="isTestnet()"><a class="dropdown-item" routerLinkActive="active" #governance="routerLinkActive" [routerLink]="['governance']">Governance</a></li>
-        <li [class.d-none]="isTestnet()"><a class="dropdown-item" routerLinkActive="active" #staking="routerLinkActive" [routerLink]="['staking']">Staking</a></li>
+        <li><a class="dropdown-item" routerLinkActive="active" #governance="routerLinkActive" [routerLink]="['governance']">Governance</a></li>
+        <li><a class="dropdown-item" routerLinkActive="active" #staking="routerLinkActive" [routerLink]="['staking']">Staking</a></li>
 
         <ng-container *ngIf="isTestnet()">
             <li><hr class="dropdown-divider"></li>

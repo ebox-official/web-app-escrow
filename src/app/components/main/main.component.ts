@@ -20,5 +20,4 @@ export class MainComponent implements OnInit {
   isTestnet(): boolean {
     return /testnet/i.test(this.connection.networkInfo()?.name);
   }
-
 }

@@ -158,4 +158,8 @@ export class StakingComponent implements OnInit {
     this.userRewardsFromContract = await this.eboxService.getReward();
   }
 
+  isStakingChain(): boolean {
+	return (this.connection.chainId$.getValue() == 1) || (this.connection.chainId$.getValue() == 56);
+  }
+
 }
