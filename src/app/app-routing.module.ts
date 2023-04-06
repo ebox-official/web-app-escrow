@@ -88,41 +88,6 @@ const routes: Routes = [
         data: { mode: "outgoing", typeOfBox: "private" },
       },
       {
-        path: "staking",
-        component: StakingComponent,
-      },
-      {
-        path: "governance",
-        component: GovernanceComponent,
-        children: [
-          {
-            path: "",
-            redirectTo: "project",
-            pathMatch: "full"
-          },
-          {
-            path: "project",
-            component: VotingsComponent,
-            data: { mode: PROJECT },
-          },
-          {
-            path: "community",
-            component: VotingsComponent,
-            data: { mode: COMMUNITY },
-          },
-        ]
-      },
-      {
-        path: "governance/project/:votingId",
-        component: VotingDetailsComponent,
-        data: { mode: PROJECT },
-      },
-      {
-        path: "governance/community/:votingId",
-        component: VotingDetailsComponent,
-        data: { mode: COMMUNITY },
-      },
-      {
         path: "**",
         component: NotFoundComponent
       },
