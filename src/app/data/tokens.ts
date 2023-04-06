@@ -724,21 +724,21 @@ let ETHEREUM_TESTNET: Token[] = [
     "name": "Test Token",
     "symbol": "AAA",
     "thumb": "assets/img/crash-test.png",
-    "address": "0xB89f9673c46b126d7A0052D972cdB9C448f92D35",
+    "address": "0xC4bCF8DEB9b5BFd84EE51CBCa99840B7cbd0aB8B",
     "decimals": 18
   },
   {
     "name": "Test Token",
     "symbol": "BBB",
     "thumb": "assets/img/crash-test.png",
-    "address": "0x0b91f9d9657e8edc725a519BC9e9fB3C785815a0",
+    "address": "0x35463E26d6BC55aC3F8E070DfD1381b60b4D9Ab1",
     "decimals": 18
   },
   {
     "name": "Test Token",
     "symbol": "CCC",
     "thumb": "assets/img/crash-test.png",
-    "address": "0x4B73517Ae7Ac55B46b8B993A41842Af399fbfa25",
+    "address": "0xd1cD0c579337E5fdE965a811dBd1dC4d4cE066eA",
     "decimals": 18
   }
 ];
@@ -1606,7 +1606,7 @@ let OPTIMISM_MAINNET: Token[] = [
 
 let chainTokenDict = {
   1: ETHEREUM_MAINNET,
-  4: ETHEREUM_TESTNET,
+  5: ETHEREUM_TESTNET,
   56: BINANCE_MAINNET,
   97: BINANCE_TESTNET,
   137: MATIC_MAINNET,

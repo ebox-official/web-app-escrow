@@ -33,9 +33,9 @@ export class ProvidersService {
             networkName: "Ethereum"
         },
         {
-            rpcUrl: "https://rinkeby.infura.io/v3/" + INFURA_API_KEY,
-            chainId: 4,
-            networkName: "Rinkeby Testnet"
+            rpcUrl: "https://goerli.infura.io/v3/" + INFURA_API_KEY,
+            chainId: 5,
+            networkName: "Goerli Testnet"
         },
         {
             rpcUrl: "https://bsc-dataseed.binance.org/",

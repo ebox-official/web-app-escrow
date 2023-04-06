@@ -71,7 +71,7 @@ export class EboxService {
           this.dappContractAddress = ETHBOX.ADDRESSES.ETHEREUM;
           this.stakingContractAddress = STAKING.ADDRESSES.ETHEREUM;
           break;
-        case "4":            // Ethereum Testnet
+        case "5":            // Ethereum Testnet
           this.dappContractAddress = ETHBOX.ADDRESSES.ETHEREUM_TESTNET;
           this.tokenDispenserContractAddress = TOKEN_DISPENSER.ADDRESSES.ETHEREUM_TESTNET;
           break;

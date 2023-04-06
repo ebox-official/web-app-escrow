@@ -91,7 +91,7 @@ export class ConnectionService {
           <div class="position-fixed top-0 start-0 w-100 h-100" style="z-index: 99999; background-color: #000d;">
             <div class="position-absolute bottom-0 w-100 px-3 py-5 bg-danger text-white text-center text-lg-start">
               <div class="display-6">Unsupported network!</div>
-              <div class="fs-4">We are currently live on Ethereum, Binance Smart Chain, Polygon, Reef Chain, Moonbeam, Moonriver &amp; Optimism (Testnets: Rinkeby, BSC, Polygon, Reef).</div>
+              <div class="fs-4">We are currently live on Ethereum, Binance Smart Chain, Polygon, Reef Chain, Moonbeam, Moonriver &amp; Optimism (Testnets: Goerli, BSC, Polygon, Reef).</div>
           </div>
         `;
         document.body.appendChild(div.firstElementChild);
@@ -155,11 +155,11 @@ export class ConnectionService {
           thumb: "https://assets.coingecko.com/coins/images/279/thumb/ethereum.png",
           accountScannerUrl: (address) => `https://etherscan.io/address/${address}`
         };
-      case "4":
+      case "5":
         return {
-          name: "Rinkeby Testnet",
+          name: "Goerli Testnet",
           thumb: "https://assets.coingecko.com/coins/images/279/thumb/ethereum.png",
-          accountScannerUrl: (address) => `https://rinkeby.etherscan.io/address/${address}`
+          accountScannerUrl: (address) => `https://goerli.etherscan.io/address/${address}`
         };
       case "56":
         return {
