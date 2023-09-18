@@ -1604,6 +1604,18 @@ let OPTIMISM_MAINNET: Token[] = [
 	}
   ];
 
+  
+let DFI_TESTNET: Token[] = [
+	{
+	  "name": "DeFiChain Token",
+	  "symbol": "DFI",
+	  "thumb": "https://assets.coingecko.com/coins/images/11757/small/symbol-defi-blockchain_200.png",
+	  "address": "0x0000000000000000000000000000000000000000",
+	  "decimals": 18,
+	  "isBase": true
+	}
+  ];
+
 let chainTokenDict = {
   1: ETHEREUM_MAINNET,
   5: ETHEREUM_TESTNET,
@@ -1615,7 +1627,8 @@ let chainTokenDict = {
   "reef-testnet": REEF_TESTNET,
   1284: MOONBEAM_MAINNET,
   1285: MOONRIVER_MAINNET,
-  10: OPTIMISM_MAINNET
+  10: OPTIMISM_MAINNET,
+  1133: DFI_TESTNET
 };
 
 export {

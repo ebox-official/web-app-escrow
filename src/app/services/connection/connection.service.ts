@@ -8,381 +8,387 @@ import { ToasterService } from 'src/app/components/toaster/toaster.service';
 import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class ConnectionService {
 
-  NOT_SUPPORTED = "Not supported.";
+	NOT_SUPPORTED = "Not supported.";
 
-  ethers = ethers;
-  provider$ = new BehaviorSubject(undefined);
-  signer$ = new BehaviorSubject(undefined);
-  chainId$ = new BehaviorSubject(undefined);
-  selectedAccount$ = new BehaviorSubject(undefined);
-  baseTokenBalance$ = new BehaviorSubject(undefined);
-  isConnected$ = new BehaviorSubject(false);
-  networkChangeNotification$ = new Subject();
+	ethers = ethers;
+	provider$ = new BehaviorSubject(undefined);
+	signer$ = new BehaviorSubject(undefined);
+	chainId$ = new BehaviorSubject(undefined);
+	selectedAccount$ = new BehaviorSubject(undefined);
+	baseTokenBalance$ = new BehaviorSubject(undefined);
+	isConnected$ = new BehaviorSubject(false);
+	networkChangeNotification$ = new Subject();
 
-  private LS_KEY = "EBOX_CACHED_PROVIDER";
-  private syncRate = 1000;
-  private cacheProvider = true;
-  private updateVarsTimer;
+	private LS_KEY = "EBOX_CACHED_PROVIDER";
+	private syncRate = 1000;
+	private cacheProvider = true;
+	private updateVarsTimer;
 
-  constructor(
-    private providers: ProvidersService,
-    private toasterService: ToasterService
-  ) {
+	constructor(
+		private providers: ProvidersService,
+		private toasterService: ToasterService
+	) {
 
-    // Tweak the state of connection based on provider, signer, chainId, selectedAccount and baseTokenBalance
-    zip(
-      this.provider$,
-      this.signer$,
-      this.chainId$,
-      this.selectedAccount$,
-      this.baseTokenBalance$
-    ).subscribe(values => {
+		// Tweak the state of connection based on provider, signer, chainId, selectedAccount and baseTokenBalance
+		zip(
+			this.provider$,
+			this.signer$,
+			this.chainId$,
+			this.selectedAccount$,
+			this.baseTokenBalance$
+		).subscribe(values => {
 
-      // When everything has emitted a non-falsy value, it means provider has connected
-      let isConnected = values.every(value => isNotNullOrUndefined(value));
+			// When everything has emitted a non-falsy value, it means provider has connected
+			let isConnected = values.every(value => isNotNullOrUndefined(value));
 
-      // Emit a new state only when it changes
-      if (this.isConnected$.getValue() !== isConnected) {
-        this.isConnected$.next(isConnected);
-      }
-    });
+			// Emit a new state only when it changes
+			if (this.isConnected$.getValue() !== isConnected) {
+				this.isConnected$.next(isConnected);
+			}
+		});
 
-    // Emit a network change when either chainId or selectedAccount change
-    this.chainId$.subscribe(value =>
-      this.networkChangeNotification$.
-        next({ topic: "chainId", value })
-    );
-    this.selectedAccount$.subscribe(value =>
-      this.networkChangeNotification$.
-        next({ topic: "selectedAccount", value })
-    );
+		// Emit a network change when either chainId or selectedAccount change
+		this.chainId$.subscribe(value =>
+			this.networkChangeNotification$.
+				next({ topic: "chainId", value })
+		);
+		this.selectedAccount$.subscribe(value =>
+			this.networkChangeNotification$.
+				next({ topic: "selectedAccount", value })
+		);
 
-    // When the user has connected start tracking network changes:
-    // if the user changes either account or network, then refresh the dapp
-    this.isConnected$.pipe(
-      filter(value => value),
-      switchMap(_ => 
-        this.networkChangeNotification$.pipe(
-          takeUntil(
-            this.isConnected$.pipe(
-              filter(value => !value)
-            )
-          )
-        )
-      ),
-      map(_ => this.checkNetworkSupport())
-    ).subscribe();
-  }
+		// When the user has connected start tracking network changes:
+		// if the user changes either account or network, then refresh the dapp
+		this.isConnected$.pipe(
+			filter(value => value),
+			switchMap(_ =>
+				this.networkChangeNotification$.pipe(
+					takeUntil(
+						this.isConnected$.pipe(
+							filter(value => !value)
+						)
+					)
+				)
+			),
+			map(_ => this.checkNetworkSupport())
+		).subscribe();
+	}
 
-  private unsupportedShown = false;
-  private checkNetworkSupport() {
-    
-    let netInfo = this.networkInfo();
-    if (netInfo.name === this.NOT_SUPPORTED) {
+	private unsupportedShown = false;
+	private checkNetworkSupport() {
 
-      // Add a banner to tell the user the current network is unsupported
-      if (!this.unsupportedShown) {
-        let div = document.createElement("DIV");
-        div.innerHTML = `
+		let netInfo = this.networkInfo();
+		if (netInfo.name === this.NOT_SUPPORTED) {
+
+			// Add a banner to tell the user the current network is unsupported
+			if (!this.unsupportedShown) {
+				let div = document.createElement("DIV");
+				div.innerHTML = `
           <div class="position-fixed top-0 start-0 w-100 h-100" style="z-index: 99999; background-color: #000d;">
             <div class="position-absolute bottom-0 w-100 px-3 py-5 bg-danger text-white text-center text-lg-start">
               <div class="display-6">Unsupported network!</div>
               <div class="fs-4">We are currently live on Ethereum, Binance Smart Chain, Polygon, Reef Chain, Moonbeam, Moonriver &amp; Optimism (Testnets: Goerli, BSC, Polygon, Reef).</div>
           </div>
         `;
-        document.body.appendChild(div.firstElementChild);
-        this.unsupportedShown = true;
-        return;
-      }
-    }
-    
-    window.location.reload();
-  }
+				document.body.appendChild(div.firstElementChild);
+				this.unsupportedShown = true;
+				return;
+			}
+		}
 
-  checksumAddress(address: string): string {
-    return this.ethers.utils.getAddress(address);
-  }
+		window.location.reload();
+	}
 
-  // Check if the given address is valid
-  isAddressValid(address: string): boolean {
-    return this.ethers.utils.isAddress(address);
-  }
+	checksumAddress(address: string): string {
+		return this.ethers.utils.getAddress(address);
+	}
 
-  async signMessage(message) {
+	// Check if the given address is valid
+	isAddressValid(address: string): boolean {
+		return this.ethers.utils.isAddress(address);
+	}
 
-    let signature;
-    try {
-      signature = await this.signer$.getValue().signMessage(message);
-    }
-    catch (err) {
-      this.toasterService.addToaster({
-        color: "danger",
-        message: "Message signing aborted by user."
-      });
-      throw err;
-    }
+	async signMessage(message) {
 
-    this.toasterService.addToaster({
-      color: "success",
-      message: "Message signed successfully!"
-    });
+		let signature;
+		try {
+			signature = await this.signer$.getValue().signMessage(message);
+		}
+		catch (err) {
+			this.toasterService.addToaster({
+				color: "danger",
+				message: "Message signing aborted by user."
+			});
+			throw err;
+		}
 
-    // Return the signature to the consumer
-    return signature;
-  }
+		this.toasterService.addToaster({
+			color: "success",
+			message: "Message signed successfully!"
+		});
 
-  networkInfo() {
-    switch ((this.chainId$.getValue() || -1).toString()) {
-      case "reef-mainnet":
-        return {
-          name: "Reef Chain",
-          thumb: "https://assets.coingecko.com/coins/images/13504/small/Group_10572.png",
-          accountScannerUrl: (address) => `https://reefscan.com/account/${address}`
-        };
-      case "reef-testnet":
-        return {
-          name: "Reef Testnet",
-          thumb: "https://assets.coingecko.com/coins/images/13504/small/Group_10572.png",
-          accountScannerUrl: (address) => `https://testnet.reefscan.com/account/${address}`
-        };
-      case "1":
-        return {
-          name: "Ethereum",
-          thumb: "https://assets.coingecko.com/coins/images/279/thumb/ethereum.png",
-          accountScannerUrl: (address) => `https://etherscan.io/address/${address}`
-        };
-      case "5":
-        return {
-          name: "Goerli Testnet",
-          thumb: "https://assets.coingecko.com/coins/images/279/thumb/ethereum.png",
-          accountScannerUrl: (address) => `https://goerli.etherscan.io/address/${address}`
-        };
-      case "56":
-        return {
-          name: "Binance Smart Chain",
-          thumb: "https://v1exchange.pancakeswap.finance/images/coins/bnb.png",
-          accountScannerUrl: (address) => `https://bscscan.com/address/${address}`
-        };
-      case "97":
-        return {
-          name: "BSC Testnet",
-          thumb: "https://v1exchange.pancakeswap.finance/images/coins/bnb.png",
-          accountScannerUrl: (address) => `https://testnet.bscscan.com/address/${address}`
-        };
-      case "137":
-        return {
-          name: "Polygon",
-          thumb: "https://assets.coingecko.com/coins/images/4713/thumb/matic___polygon.jpg",
-          accountScannerUrl: (address) => `https://polygonscan.com/address/${address}`
-        };
-      case "80001":
-        return {
-          name: "Polygon Testnet",
-          thumb: "https://assets.coingecko.com/coins/images/4713/thumb/matic___polygon.jpg",
-          accountScannerUrl: (address) => `https://mumbai.polygonscan.com/address/${address}`
-        };
-      case "1284":
-        return {
-          name: "Moonbeam",
-          thumb: "https://assets.coingecko.com/coins/images/22459/small/glmr.png",
-          accountScannerUrl: (address) => `https://moonscan.io/address/${address}`
-        };
-      case "1285":
-        return {
-          name: "Moonriver",
-          thumb: "https://assets.coingecko.com/coins/images/17984/small/9285.png",
-          accountScannerUrl: (address) => `https://moonriver.moonscan.io/address/${address}`
-        };
-      case "10":
-        return {
-          name: "Optimism",
-          thumb: "https://assets.coingecko.com/coins/images/25244/small/OP.jpeg",
-          accountScannerUrl: (address) => `https://optimistic.etherscan.io/address/${address}`
-        };
-      default:
-        return {
-          name: this.NOT_SUPPORTED,
-          thumb: null,
-          accountScannerUrl: () => ``
-        };
-    }
-  }
+		// Return the signature to the consumer
+		return signature;
+	}
 
-  // ethers.utils.formatUnits(wei, decimals)
-  weiToDecimal(wei: BigNumber|string, decimals: string|number): string {
-    return this.ethers.utils.formatUnits(wei, decimals);
-  }
+	networkInfo() {
+		switch ((this.chainId$.getValue() || -1).toString()) {
+			case "reef-mainnet":
+				return {
+					name: "Reef Chain",
+					thumb: "https://assets.coingecko.com/coins/images/13504/small/Group_10572.png",
+					accountScannerUrl: (address) => `https://reefscan.com/account/${address}`
+				};
+			case "reef-testnet":
+				return {
+					name: "Reef Testnet",
+					thumb: "https://assets.coingecko.com/coins/images/13504/small/Group_10572.png",
+					accountScannerUrl: (address) => `https://testnet.reefscan.com/account/${address}`
+				};
+			case "1":
+				return {
+					name: "Ethereum",
+					thumb: "https://assets.coingecko.com/coins/images/279/thumb/ethereum.png",
+					accountScannerUrl: (address) => `https://etherscan.io/address/${address}`
+				};
+			case "5":
+				return {
+					name: "Goerli Testnet",
+					thumb: "https://assets.coingecko.com/coins/images/279/thumb/ethereum.png",
+					accountScannerUrl: (address) => `https://goerli.etherscan.io/address/${address}`
+				};
+			case "56":
+				return {
+					name: "Binance Smart Chain",
+					thumb: "https://v1exchange.pancakeswap.finance/images/coins/bnb.png",
+					accountScannerUrl: (address) => `https://bscscan.com/address/${address}`
+				};
+			case "97":
+				return {
+					name: "BSC Testnet",
+					thumb: "https://v1exchange.pancakeswap.finance/images/coins/bnb.png",
+					accountScannerUrl: (address) => `https://testnet.bscscan.com/address/${address}`
+				};
+			case "137":
+				return {
+					name: "Polygon",
+					thumb: "https://assets.coingecko.com/coins/images/4713/thumb/matic___polygon.jpg",
+					accountScannerUrl: (address) => `https://polygonscan.com/address/${address}`
+				};
+			case "80001":
+				return {
+					name: "Polygon Testnet",
+					thumb: "https://assets.coingecko.com/coins/images/4713/thumb/matic___polygon.jpg",
+					accountScannerUrl: (address) => `https://mumbai.polygonscan.com/address/${address}`
+				};
+			case "1284":
+				return {
+					name: "Moonbeam",
+					thumb: "https://assets.coingecko.com/coins/images/22459/small/glmr.png",
+					accountScannerUrl: (address) => `https://moonscan.io/address/${address}`
+				};
+			case "1285":
+				return {
+					name: "Moonriver",
+					thumb: "https://assets.coingecko.com/coins/images/17984/small/9285.png",
+					accountScannerUrl: (address) => `https://moonriver.moonscan.io/address/${address}`
+				};
+			case "10":
+				return {
+					name: "Optimism",
+					thumb: "https://assets.coingecko.com/coins/images/25244/small/OP.jpeg",
+					accountScannerUrl: (address) => `https://optimistic.etherscan.io/address/${address}`
+				};
+			case "1133":
+				return {
+					name: "DefiMetaChain Testnet",
+					thumb: "https://assets.coingecko.com/coins/images/11757/small/symbol-defi-blockchain_200.png",
+					accountScannerUrl: (address) => `https://testnet-dmc.mydefichain.com:8444/address/${address}`
+				};
+			default:
+				return {
+					name: this.NOT_SUPPORTED,
+					thumb: null,
+					accountScannerUrl: () => ``
+				};
+		}
+	}
 
-  // ethers.utils.parseUnits(decimalString , decimals)
-  decimalToWei(decimalString: string, decimals: string|number): BigNumber {
-    return this.ethers.utils.parseUnits(decimalString , decimals);
-  }
+	// ethers.utils.formatUnits(wei, decimals)
+	weiToDecimal(wei: BigNumber | string, decimals: string | number): string {
+		return this.ethers.utils.formatUnits(wei, decimals);
+	}
 
-  private async _connect(resolve, reject, providerName) {
+	// ethers.utils.parseUnits(decimalString , decimals)
+	decimalToWei(decimalString: string, decimals: string | number): BigNumber {
+		return this.ethers.utils.parseUnits(decimalString, decimals);
+	}
 
-    // Get the provider selected by the user
-    let providerConnector = this.providers.dictionary[providerName];
-    if (!this.providers.dictionary[providerName]) {
-      reject("Provider name not found.");
-    }
+	private async _connect(resolve, reject, providerName) {
 
-    let result;
-    try {
+		// Get the provider selected by the user
+		let providerConnector = this.providers.dictionary[providerName];
+		if (!this.providers.dictionary[providerName]) {
+			reject("Provider name not found.");
+		}
 
-      // Await the evaluation of the connector
-      result = await providerConnector.call(this.providers);
-    }
-    catch (err) {
+		let result;
+		try {
 
-      // Clear the cache because it can be that the user dismissed the modal on resumed connection
-      this.clearCachedProvider();
-      reject(err);
-      return;
-    }
+			// Await the evaluation of the connector
+			result = await providerConnector.call(this.providers);
+		}
+		catch (err) {
 
-    this.provider$.next(result.provider);
-    this.signer$.next(result.signer);
+			// Clear the cache because it can be that the user dismissed the modal on resumed connection
+			this.clearCachedProvider();
+			reject(err);
+			return;
+		}
 
-    // Sync variables
-    await this.syncingIntervals(result.getNetwork, result.getAccounts);
+		this.provider$.next(result.provider);
+		this.signer$.next(result.signer);
 
-    // When the connection is established, cache the provider and resolve
-    this.isConnected$.
-      subscribe(isConnected => {
+		// Sync variables
+		await this.syncingIntervals(result.getNetwork, result.getAccounts);
 
-        if (isConnected) {
-          
-          // Cache the current provider
-          if (this.cacheProvider) {
-            localStorage.setItem(this.LS_KEY, providerName);
-          }
-  
-          resolve(true);
-        }
-      });
-  }
+		// When the connection is established, cache the provider and resolve
+		this.isConnected$.
+			subscribe(isConnected => {
 
-  connect(providerName?) {
+				if (isConnected) {
 
-    // Return a promise so that it can be awaited by the consumer
-    return new Promise(async (resolve, reject) => {
+					// Cache the current provider
+					if (this.cacheProvider) {
+						localStorage.setItem(this.LS_KEY, providerName);
+					}
 
-      if (providerName) {
-        this._connect(resolve, reject, providerName);
-        return;
-      }
+					resolve(true);
+				}
+			});
+	}
 
-      // Load the cached provider straight away
-      if (this.cacheProvider) {
-        this._connect(resolve, reject, localStorage.getItem(this.LS_KEY));
-      }
-    });
-  }
+	connect(providerName?) {
 
-  clearCachedProvider() {
-    localStorage.removeItem(this.LS_KEY);
+		// Return a promise so that it can be awaited by the consumer
+		return new Promise(async (resolve, reject) => {
 
-    // Manually removing leftovers from wallet providers
-    Object.keys(localStorage).forEach(key => {
-      if (/(walletlink|walletconnect)/i.test(key)) {
-        localStorage.removeItem(key);
-      }
-    });
-  };
+			if (providerName) {
+				this._connect(resolve, reject, providerName);
+				return;
+			}
 
-  disconnect() {
-    this.clearCachedProvider();
-    window.location.reload();
-  }
+			// Load the cached provider straight away
+			if (this.cacheProvider) {
+				this._connect(resolve, reject, localStorage.getItem(this.LS_KEY));
+			}
+		});
+	}
 
-  syncingIntervals(getNetwork, getAccounts) {
+	clearCachedProvider() {
+		localStorage.removeItem(this.LS_KEY);
 
-    let updateVars = async () => {
+		// Manually removing leftovers from wallet providers
+		Object.keys(localStorage).forEach(key => {
+			if (/(walletlink|walletconnect)/i.test(key)) {
+				localStorage.removeItem(key);
+			}
+		});
+	};
 
-      // Chain id
-      let chainId;
-      try {
-        let network = await getNetwork();
-        chainId = network.chainId;
-      }
-      catch (err) {
-        console.error("Chain id doesn't seem available...", err);
+	disconnect() {
+		this.clearCachedProvider();
+		window.location.reload();
+	}
 
-        // If it was impossible to get, then emit it as null and return
-        if (this.chainId$.getValue() !== null) {
-          this.chainId$.next(null);
-        }
-        return;
-      }
-      if (this.chainId$.getValue() !== chainId) {
-        this.chainId$.next(chainId);
-      }
+	syncingIntervals(getNetwork, getAccounts) {
 
-      // Selected account
-      let selectedAccount;
-      let response;
-      try {
-        response = await getAccounts();
-      }
-      catch (err) {
-        console.error("Selected account doesn't seem available...", err);
+		let updateVars = async () => {
 
-        // If user denied the request (e.g. Fortmatic), then disconnect
-        if (err.code == "-32603") {
-          this.disconnect();
-          throw err;
-        }
+			// Chain id
+			let chainId;
+			try {
+				let network = await getNetwork();
+				chainId = network.chainId;
+			}
+			catch (err) {
+				console.error("Chain id doesn't seem available...", err);
 
-        // If it was impossible to get, then emit it as null and return
-        if (this.selectedAccount$.getValue() !== null) {
-          this.selectedAccount$.next(null);
-        }
-        return;
-      }
-      if (Array.isArray(response)) {
-        selectedAccount = response[0];
-      }
-      else {
-        selectedAccount = response;
-      }
-      if (this.selectedAccount$.getValue() !== selectedAccount) {
-        this.selectedAccount$.next(selectedAccount);
-      }
+				// If it was impossible to get, then emit it as null and return
+				if (this.chainId$.getValue() !== null) {
+					this.chainId$.next(null);
+				}
+				return;
+			}
+			if (this.chainId$.getValue() !== chainId) {
+				this.chainId$.next(chainId);
+			}
 
-      // Base token balance
-      let signer = this.signer$.getValue();
-      if (isNotNullOrUndefined(signer)) {
-        let balance;
-        try {
-          balance = await signer.getBalance();
-        }
-        catch (err) {
-          console.error("Base token amount doesn't seem available...", err);
+			// Selected account
+			let selectedAccount;
+			let response;
+			try {
+				response = await getAccounts();
+			}
+			catch (err) {
+				console.error("Selected account doesn't seem available...", err);
 
-          // If it was impossible to get, then emit it as null and return
-          if (this.baseTokenBalance$.getValue() !== null) {
-            this.baseTokenBalance$.next(null);
-          }
-          return;
-        }
-        let ether = ethers.utils.formatEther(balance);
-        if (this.baseTokenBalance$.getValue() !== ether) {
-          this.baseTokenBalance$.next(ether);
-        }
-      }
-    };
+				// If user denied the request (e.g. Fortmatic), then disconnect
+				if (err.code == "-32603") {
+					this.disconnect();
+					throw err;
+				}
 
-    let loop = async () => {
-      await updateVars();
-      this.updateVarsTimer = setTimeout(() => loop(), this.syncRate);
-    }
+				// If it was impossible to get, then emit it as null and return
+				if (this.selectedAccount$.getValue() !== null) {
+					this.selectedAccount$.next(null);
+				}
+				return;
+			}
+			if (Array.isArray(response)) {
+				selectedAccount = response[0];
+			}
+			else {
+				selectedAccount = response;
+			}
+			if (this.selectedAccount$.getValue() !== selectedAccount) {
+				this.selectedAccount$.next(selectedAccount);
+			}
 
-    // Call the above immediately
-    if (!this.updateVarsTimer) loop();
-  };
+			// Base token balance
+			let signer = this.signer$.getValue();
+			if (isNotNullOrUndefined(signer)) {
+				let balance;
+				try {
+					balance = await signer.getBalance();
+				}
+				catch (err) {
+					console.error("Base token amount doesn't seem available...", err);
+
+					// If it was impossible to get, then emit it as null and return
+					if (this.baseTokenBalance$.getValue() !== null) {
+						this.baseTokenBalance$.next(null);
+					}
+					return;
+				}
+				let ether = ethers.utils.formatEther(balance);
+				if (this.baseTokenBalance$.getValue() !== ether) {
+					this.baseTokenBalance$.next(ether);
+				}
+			}
+		};
+
+		let loop = async () => {
+			await updateVars();
+			this.updateVarsTimer = setTimeout(() => loop(), this.syncRate);
+		}
+
+		// Call the above immediately
+		if (!this.updateVarsTimer) loop();
+	};
 
 }
