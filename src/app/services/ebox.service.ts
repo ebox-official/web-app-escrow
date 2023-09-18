@@ -101,6 +101,7 @@ export class EboxService {
 					break;
 				case "1133":          // DefiMetaChain Testnet
 					this.dappContractAddress = ETHBOX.ADDRESSES.DMC_TESTNET;
+					this.tokenDispenserContractAddress = TOKEN_DISPENSER.ADDRESSES.DMC_TESTNET;
 					break;
 				default:
 					this.reset();

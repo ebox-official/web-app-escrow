@@ -15,6 +15,9 @@
         <button class="btn d-none d-md-inline bg-body border"
             (click)="eboxService.giveTestToken('CCC', 2);"
         >Get 100 CCC</button>
+		<button class="btn d-none d-md-inline bg-body border"
+            (click)="eboxService.giveTestToken('EBOX', 3);"
+        >Get 100 EBOX</button>
     </ng-container>
 
     <!-- /visible only after md -->
@@ -42,6 +45,11 @@
                 <button class="btn dropdown-item"
                     (click)="eboxService.giveTestToken('CCC', 2);"
                 >Get 100 CCC</button>
+            </li>
+			<li>
+                <button class="btn dropdown-item"
+                    (click)="eboxService.giveTestToken('EBOX', 3);"
+                >Get 100 EBOX</button>
             </li>
         </ng-container>
 
