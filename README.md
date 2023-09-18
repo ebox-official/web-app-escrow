@@ -17,7 +17,7 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Compile
 
-Run `ng build --output-path app --base-href /apps/escrow-v1/`. The build artifacts will be stored in the `app/`. Use the `--prod` flag for a production build.
+Run `set NODE_OPTIONS=--openssl-legacy-provider && ng build --output-path app --base-href /apps/escrow-v1/` (Windows). The build artifacts will be stored in the `app/`. Use the `--prod` flag for a production build.
 
 If you want to compile for GH pages run `ng build --output-path docs --base-href /apps/escrow-v1/`, for development `--configuration development`. Then go in the `docs/`, make a copy of index.html are rename it into 404.html.
 
