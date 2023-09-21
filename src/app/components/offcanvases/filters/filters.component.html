@@ -4,7 +4,7 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-        <p>Here you can tweak filters for your transactions.</p>
+        <!-- <p>Here you can tweak filters for your transactions.</p> -->
 
         <form #form class="d-flex flex-column gap-3" (submit)="$event.preventDefault(); apply();">
 
@@ -15,13 +15,13 @@
                     <div class="form-check">
                         <label class="form-check-label">
                             <input type="radio" name="sortBy" value="dateAsc" class="form-check-input" #defaultSortBy checked>
-                            Date ascending
+                            Date, ascending
                         </label>
                     </div>
                     <div class="form-check">
                         <label class="form-check-label">
                             <input type="radio" name="sortBy" value="dateDesc" class="form-check-input">
-                            Date descending
+                            Date, descending
                         </label>
                     </div>
                 </fieldset>
@@ -54,13 +54,13 @@
                 <fieldset class="d-flex flex-column gap-3">
                     <div class="form-check">
                         <label class="form-check-label">
-                            One way
+                            One-way
                             <input type="checkbox" #type1 [name]="ONE_WAY" class="form-check-input" checked>
                         </label>
                     </div>
                     <div class="form-check">
                         <label class="form-check-label">
-                            Otc trade
+                            OTC trade
                             <input type="checkbox" #type2 [name]="OTC_TRADE" class="form-check-input" checked>
                         </label>
                     </div>
@@ -69,12 +69,12 @@
             <!-- Type -->
 
             <!-- Sent token -->
-            <button type="button" class="ctrl-arrow-rx btn justify-content-between collapsed" data-bs-toggle="collapse" data-bs-target="#send-token-collapse">Sent token</button>
+            <button type="button" class="ctrl-arrow-rx btn justify-content-between collapsed" data-bs-toggle="collapse" data-bs-target="#send-token-collapse">Sent Tokens</button>
             <div class="ps-3 collapse" id="send-token-collapse">
-                <p>
+                <!-- <p>
                     <small class="text-muted">You can choose multiple tokens</small>
-                </p>
-                <button type="button" class="btn btn-outline-primary" (click)="spawnTokenSelector('send');">Choose token</button>
+                </p> -->
+                <button type="button" class="btn btn-outline-primary" (click)="spawnTokenSelector('send');">Choose Tokens</button>
                 <div class="d-flex flex-wrap gap-2 mt-3">
                     <span class="badge rounded-pill bg-light text-dark pointer" *ngFor="let t of filterDict.sendTokenInfo;" (click)="removeToken('send', t);">
                         <img height="24" [src]="t.thumb" [alt]="t.symbol" onerror="this.src='assets/img/unknown-icon.png'"> {{ t.symbol }} <i class="bi bi-x"></i>
@@ -84,12 +84,12 @@
             <!-- /Sent token -->
 
             <!-- Requested token -->
-            <button type="button" class="ctrl-arrow-rx btn justify-content-between collapsed" data-bs-toggle="collapse" data-bs-target="#request-token-collapse">Requested token</button>
+            <button type="button" class="ctrl-arrow-rx btn justify-content-between collapsed" data-bs-toggle="collapse" data-bs-target="#request-token-collapse">Requested Tokens</button>
             <div class="ps-3 collapse" id="request-token-collapse">
-                <p>
+                <!-- <p>
                     <small class="text-muted">You can choose multiple tokens</small>
-                </p>
-                <button type="button" class="btn btn-outline-primary" (click)="spawnTokenSelector('request');">Choose token</button>
+                </p> -->
+                <button type="button" class="btn btn-outline-primary" (click)="spawnTokenSelector('request');">Choose Tokens</button>
                 <div class="d-flex flex-wrap gap-2 mt-3">
                     <span class="badge rounded-pill bg-light text-dark pointer" *ngFor="let t of filterDict.requestTokenInfo;" (click)="removeToken('request', t);">
                         <img height="24" [src]="t.thumb" [alt]="t.symbol" onerror="this.src='assets/img/unknown-icon.png'"> {{ t.symbol }} <i class="bi bi-x"></i>

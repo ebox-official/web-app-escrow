@@ -7,7 +7,7 @@
             </div>
             <div class="p-3 text-center">
                 <button class="mb-3 btn btn-primary" (click)="addToken();">
-                    Add new
+                    Add New
                     &nbsp;<i class="bi bi-plus-circle-fill"></i>
                 </button>
                 <div class="form-floating">
@@ -44,7 +44,7 @@
 
                             <!-- address -->
                             <ng-container *ngIf="t.isBase else nonBaseToken">
-                                Base token
+                                <span style="opacity: 0.7;">Base Currency</span>
                             </ng-container>
                             <ng-template #nonBaseToken>
                                 <app-copyable-plaintext class="copyable-address mt-1" [value]="t.address" size="sm"></app-copyable-plaintext>

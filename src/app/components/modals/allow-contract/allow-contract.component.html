@@ -8,7 +8,7 @@
             <div class="modal-body">
                 You haven't given ebox the permission to trade this token:
                 <div *ngIf="data?.token as tokenInfo" class="my-4 d-flex flex-column gap-2 align-items-center">
-                    <img height="32" [src]="tokenInfo.thumb" [alt]="tokenInfo.symbol" onerror="this.src='assets/img/unknown-icon.png'">
+                    <img height="36" [src]="tokenInfo.thumb" [alt]="tokenInfo.symbol" onerror="this.src='assets/img/unknown-icon.png'">
                     <div>{{ tokenInfo.name }} <span class="fw-bold">{{ tokenInfo.symbol }}</span></div>
                 </div>
                 In order to continue with the trade you'll have to grant ebox the permission.<br>You'll be notified once the allowance has been granted.

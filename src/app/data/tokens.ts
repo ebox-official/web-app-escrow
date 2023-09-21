@@ -1618,28 +1618,21 @@ let DFI_TESTNET: Token[] = [
 		"name": "Test Token A",
 		"symbol": "AAA",
 		"thumb": "assets/img/crash-test.png",
-		"address": "0x0a3ec594B39Ead1Ee2A92d794812ed48434AcdD2",
+		"address": "0xecdEdBAbCc91ec1Df27fACd3625D4553d6Bb1993",
 		"decimals": 18
 	  },
 	  {
 		"name": "Test Token B ",
 		"symbol": "BBB",
 		"thumb": "assets/img/crash-test.png",
-		"address": "0x28eb00ae39684655c4721D8a56F95B0858b766A3",
+		"address": "0xd9FFc1Dcf857B2d5E0C85749860Af0e491db5664",
 		"decimals": 18
 	  },
 	  {
 		"name": "Test Token C",
 		"symbol": "CCC",
 		"thumb": "assets/img/crash-test.png",
-		"address": "0xD747dd1B866f066D27a9f4706eAD9CB8080e73e7",
-		"decimals": 18
-	  },
-	  {
-		"name": "EBOX Test Token",
-		"symbol": "EBOX",
-		"thumb": "assets/img/crash-test.png",
-		"address": "0x1c9fDFC2C06B301EF95dEE98BAd089EED735D9F3",
+		"address": "0x7CE3e4b5972200A9F63566f2Ce4A62A34e417C9A",
 		"decimals": 18
 	  }
   ];

@@ -9,8 +9,8 @@
             }}</h4>
             <small class="card-text text-muted">{{
                 mode === ONE_WAY ?
-                    "Safely send tokens through ebox." :
-                    "Exchange tokens trustlessly through ebox."
+                    "Safely send assets through the ebox On-Chain Escrow." :
+                    "Exchange assets trustlessly through the ebox On-Chain Escrow."
             }}</small>
         </div>
     </ng-container>
@@ -22,7 +22,7 @@
         
             <div class="d-flex flex-column gap-2">
                 <label class="form-label">
-                    <span>Recipient*</span>
+                    <div style="margin-bottom: 3px; display: inline-block;">Recipient *</div>
                     <div class="position-relative">
             
                         <!-- Recipient input -->
@@ -33,7 +33,7 @@
                 </label>
                 
                 <label class="form-label">
-                    <span>Passphrase</span>
+                    <div style="margin-bottom: 3px; display: inline-block;">Passphrase</div>
                     <div class="position-relative">
             
                         <!-- Passphrase input -->
@@ -44,7 +44,7 @@
                 </label>
                 
                 <label class="form-label">
-                    <span>Send amount*</span>
+                    <div style="margin-bottom: 3px; display: inline-block;">Send Amount *</div>
                     <div class="position-relative">
             
                         <!-- Send amount input -->
@@ -64,18 +64,18 @@
                             <div class="d-inline-flex align-items-center gap-1">
                                 <div *ngIf="tokenDecimalBalance === null" class="spinner-border spinner-border-sm text-light"></div>
                                 <span *ngIf="tokenDecimalBalance">{{ tokenDecimalBalance | multiplierFormatter }}</span>
-                                <span #sendTokenSymbol class="text-uppercase">--</span>
+                                <span #sendTokenSymbol class="text-uppercase">–</span>
                                 <i class="bi bi-caret-down-fill"></i>
                             </div>
             
                             <!-- Send token input -->
-                            <input appInvisibleInput #sendTokenAddress name="sendToken" type="text" required appCustomValidationMessage validationMessage="Choose a send token." checkForChange="true">
+                            <input appInvisibleInput #sendTokenAddress name="sendToken" type="text" required appCustomValidationMessage validationMessage="Choose an asset to send." checkForChange="true">
                         </button>
                     </div>
                 </label>
             
                 <label class="form-label" *ngIf="mode === OTC_TRADE">
-                    <span>Request amount*</span>
+                    <div style="margin-bottom: 3px; display: inline-block;">Request Amount *</div>
                     <div class="position-relative">
             
                         <!-- Request amount input -->
@@ -90,11 +90,11 @@
                         >
             
                         <button type="button" style="right: .2rem;" class="position-absolute top-50 translate-middle-y btn btn-dark btn-sm" (click)="spawnTokenSelector('request');">
-                            <span #requestTokenSymbol class="text-uppercase me-1">-</span>
+                            <span #requestTokenSymbol class="text-uppercase me-1">–</span>
                             <i class="bi bi-caret-down-fill"></i>
             
                             <!-- Request token input -->
-                            <input appInvisibleInput #requestTokenAddress name="requestToken" type="text" required appCustomValidationMessage validationMessage="Choose a request token." checkForChange="true">
+                            <input appInvisibleInput #requestTokenAddress name="requestToken" type="text" required appCustomValidationMessage validationMessage="Choose an asset to request." checkForChange="true">
             
                         </button>
                     </div>
@@ -106,8 +106,8 @@
             
                         <div *ngIf="mode === ONE_WAY" class="d-grid" style="grid-template-columns: auto max-content; align-items: center;">
                             <div>
-                                <label class="form-check-label d-block fw-bolder" for="privacy-mode">Privacy mode</label>
-                                <small class="text-muted">Encrypts addresses before transmitting into the internet and storing on the blockchain.</small>
+                                <label class="form-check-label d-block fw-bolder" for="privacy-mode">Additional Privacy</label>
+                                <small class="text-muted">Sender &amp; recipient addresses are encrypted before being transmitted into the internet and stored on the blockchain.</small>
                             </div>
                             <div class="form-check form-switch">
             
@@ -119,7 +119,7 @@
             
                         <div class="d-grid" style="grid-template-columns: auto max-content; align-items: center;">
                             <div>
-                                <label class="form-check-label d-block fw-bolder" for="keep-inputs">Keep inputs after sending</label>
+                                <label class="form-check-label d-block fw-bolder" for="keep-inputs">Keep Inputs</label>
                                 <small class="text-muted">Does not clear the input boxes after sending. Useful for multiple consecutive transactions.</small>
                             </div>
                             <div class="form-check form-switch">

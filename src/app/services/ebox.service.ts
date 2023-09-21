@@ -116,18 +116,14 @@ export class EboxService {
 
 			let signer = this.connection.signer$.getValue();
 
-			this.dappContract = new this.connection.ethers.
-				Contract(this.dappContractAddress, ETHBOX.ABI, signer);
+			this.dappContract = new this.connection.ethers.Contract(this.dappContractAddress, ETHBOX.ABI, signer);
 
-			if (this.stakingContractAddress) {
-				this.stakingContract = new this.connection.ethers.
-					Contract(this.stakingContractAddress, STAKING.ABI, signer);
-			}
 
-			if (this.tokenDispenserContractAddress) {
-				this.tokenDispenserContract = new this.connection.ethers.
-					Contract(this.tokenDispenserContractAddress, TOKEN_DISPENSER.ABI, signer);
-			}
+			if (this.stakingContractAddress)
+				this.stakingContract = new this.connection.ethers.Contract(this.stakingContractAddress, STAKING.ABI, signer);
+
+			if (this.tokenDispenserContractAddress)
+				this.tokenDispenserContract = new this.connection.ethers.Contract(this.tokenDispenserContractAddress, TOKEN_DISPENSER.ABI, signer);
 
 			this.setBoxesTimer();
 			this.dappReady$.next(true);
@@ -399,12 +395,10 @@ export class EboxService {
 		// Making of the transaction
 		let tx;
 		try {
-			if (box.isPrivate) {
-				tx = await this.dappContract.cancelBoxWithPrivacy(box.id, { value: ZERO });
-			}
-			else {
-				tx = await this.dappContract.cancelBox(box.id, { value: ZERO });
-			}
+			if (box.isPrivate)
+				tx = await this.contractCall(this.dappContract, "cancelBoxWithPrivacy")(box.id, { value: ZERO });
+			else
+				tx = await this.contractCall(this.dappContract, "cancelBox")(box.id, { value: ZERO });
 		}
 		catch (err) {
 			this.toasterService.addToaster({
@@ -511,18 +505,18 @@ export class EboxService {
 		let tx;
 		try {
 			if (box.isPrivate) {
-				tx = await this.dappContract.
-					clearBoxWithPrivacy(box.id, this.hash(passphrase), { value: baseWei });
+				tx = await this.contractCall(this.dappContract,
+					"clearBoxWithPrivacy")(box.id, this.hash(passphrase), { value: baseWei });
 			}
 			else {
-				tx = await this.dappContract.
-					clearBox(box.id, this.hash(passphrase), { value: baseWei });
+				tx = await this.contractCall(this.dappContract,
+					"clearBox")(box.id, this.hash(passphrase), { value: baseWei });
 			}
 		}
 		catch (err) {
 			this.toasterService.addToaster({
 				color: "danger",
-				message: "Unbox aborted."
+				message: "Retrieving TX aborted."
 			});
 			this.loadingService.off(box.id);
 			throw err;
@@ -540,7 +534,7 @@ export class EboxService {
 			throw err;
 		}
 
-		this.notifyConfirmTx("Unboxed successfully!", receipt);
+		this.notifyConfirmTx("TX retrieved successfully!", receipt);
 
 		// Refetch boxes, stop loading and return to the consumer
 		await this.emitBoxesIn();
@@ -663,8 +657,8 @@ export class EboxService {
 		let tx;
 		try {
 			if (boxInputs.isPrivate) {
-				tx = await this.dappContract.
-					createBoxWithPrivacy(
+				tx = await this.contractCall(this.dappContract,
+					"createBoxWithPrivacy")(
 						this.hash(boxInputs.recipient),
 						sendTokenInfo.address,
 						sendValueWei,
@@ -673,8 +667,8 @@ export class EboxService {
 					);
 			}
 			else {
-				tx = await this.dappContract.
-					createBox(
+				tx = await this.contractCall(this.dappContract,
+					"createBox")(
 						boxInputs.recipient,
 						sendTokenInfo.address,
 						sendValueWei,
@@ -725,7 +719,7 @@ export class EboxService {
 		// Making of the transaction
 		let tx;
 		try {
-			tx = await this.tokenDispenserContract.giveToken(
+			tx = await this.contractCall(this.tokenDispenserContract, "giveToken")(
 				tokenIndex,
 				this.connection.decimalToWei("100", 18)
 			);
@@ -780,7 +774,7 @@ export class EboxService {
 		// Making of the transaction
 		let tx;
 		try {
-			tx = await this.stakingContract.claimReward();
+			tx = await this.contractCall(this.stakingContract, "claimReward")();
 		}
 		catch (err) {
 			this.toasterService.addToaster({
@@ -826,7 +820,7 @@ export class EboxService {
 		// Making of the transaction
 		let tx;
 		try {
-			tx = await tokenContract.approve(this.dappContractAddress, MAX_VALUE);
+			tx = await this.contractCall(tokenContract, "approve")(this.dappContractAddress, MAX_VALUE);
 		}
 		catch (err) {
 			this.toasterService.addToaster({
@@ -890,6 +884,38 @@ export class EboxService {
 			color: "success",
 			message: `"${message}" (Gas used: ${receipt.gasUsed}, tx hash: ${receipt.transactionHash}.)`
 		});
+	}
+
+
+
+
+
+
+	// Contract call proxy, allows fixing gas limit for DMC testnet
+	private contractCall(contract, method) {
+		var chainId = this.connection.chainId$.getValue();
+
+		if (chainId == 1133)
+			return async function (...args) {
+				//
+				var factor = { mul: "12", div: "10" };
+				//
+
+				var initialGasEstimate = await contract.estimateGas[method](...args);
+				var increasedGasEstimate = initialGasEstimate.mul(factor.mul).div(factor.div);
+
+				var lastArg = args[args.length - 1];
+				if((typeof lastArg == "object") && lastArg.value)
+					args[args.length - 1].gasLimit = increasedGasEstimate;
+				else
+					args.push({gasLimit: increasedGasEstimate});
+
+				console.log(`[DMC Testnet] Increasing gas limit *${Math.floor((Number(factor.mul) / Number(factor.div)) * 100) / 100} from ${initialGasEstimate.toString()} to ${increasedGasEstimate.toString()}`);
+
+				return contract[method](...args);
+			}
+		else
+			return contract[method];
 	}
 
 }

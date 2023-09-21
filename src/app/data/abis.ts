@@ -30,7 +30,7 @@ let TOKEN_DISPENSER = {
         BINANCE_TESTNET: "0x0D4f413f643E23C5Cae7b3D5E9E80FE97e4fd392",
         MATIC_TESTNET: "0x963e8acF143eD9638376923Ad14b28D39D8FbF2D",
         REEF_TESTNET: "0xa48EdA4585b791550909a30d14fc4e375806B7ae",
-		DMC_TESTNET: "0x40713cD6eb30c6754f5721BfD4e6e50FDa9e2954"
+		DMC_TESTNET: "0xB9f4e5ac3050644E7f2E201A9B9B76b5604b8B3F"
     },
     ABI: [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"stateMutability":"payable","type":"fallback"},{"inputs":[{"internalType":"uint8","name":"_token","type":"uint8"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"giveToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"tokenA","outputs":[{"internalType":"contract ERC20Interface","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"tokenB","outputs":[{"internalType":"contract ERC20Interface","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"tokenC","outputs":[{"internalType":"contract ERC20Interface","name":"","type":"address"}],"stateMutability":"view","type":"function"}]
 };

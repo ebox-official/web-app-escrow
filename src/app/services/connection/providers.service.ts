@@ -73,7 +73,8 @@ export class ProvidersService {
 			networkName: "Optimism"
 		},
 		{
-			rpcUrl: "https://testnet-dmc.mydefichain.com:20551",
+			//rpcUrl: "https://testnet-dmc.mydefichain.com:20551",
+			rpcUrl: "https://changi-cors-proxy.ebox.io",
 			chainId: 1133,
 			networkName: "DefiMetaChain Testnet"
 		}

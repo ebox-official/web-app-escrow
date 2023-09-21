@@ -41,7 +41,7 @@ export class DateFormatterPipe implements PipeTransform {
     let monthName = monthNames[d.getMonth()];
     let yyyy = d.getFullYear();
 
-    return `${hh}:${mm} / ${monthName} ${dd} / ${yyyy}`;
+    return `${monthName} ${dd} ${yyyy} / ${hh}:${mm}`;
   }
 
 }

@@ -12,7 +12,7 @@ import { AppBox } from './box';
     <div class="skeletonized">
       <ng-container *ngIf="boxes$ | async | listSearch: (filterDict$ | async) as boxes">
         <ng-container *ngIf="boxes.length === 0 else boxesFound">
-          <div class="p-3">No boxes found</div>
+          <div class="p-3" style="opacity: 0.5;">No transactions found.</div>
         </ng-container>
         <ng-template #boxesFound>
           <app-box-list-item *ngFor="let b of boxes; trackBy: boxId" [box]="b" [mode]="mode"></app-box-list-item>

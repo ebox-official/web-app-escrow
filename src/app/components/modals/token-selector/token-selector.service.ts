@@ -4,8 +4,6 @@ import { Token } from './token';
 import { chainTokenDict } from 'src/app/data/tokens';
 import { ConnectionService } from 'src/app/services/connection/connection.service';
 import { ERC20_ABI } from 'src/app/data/abis';
-import { ADDRESS_ZERO } from 'src/app/data/constants';
-import { BigNumber } from '@ethersproject/bignumber';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
