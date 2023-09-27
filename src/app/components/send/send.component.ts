@@ -28,6 +28,7 @@ export class SendComponent implements OnInit, AfterViewInit {
   @ViewChild("recipient") recipientRef;
   @ViewChild("passphrase") passphraseRef;
   @ViewChild("sendAmount") sendAmountRef;
+  @ViewChild("sendTokenBalance") sendTokenBalanceRef;
   @ViewChild("sendTokenSymbol") sendTokenSymbolRef;
   @ViewChild("sendTokenAddress") sendTokenAddressRef;
 
@@ -180,11 +181,11 @@ export class SendComponent implements OnInit, AfterViewInit {
       else {
 
         if (!this.sendTokenNotFoundMessageShown) {
-          this.toasterService.addToaster({ color: "danger", message: "This send token is not found in this network. (look at the URL)" });
+          this.toasterService.addToaster({ color: "danger", message: "The asset selected for sending could not be found in this network. Please check the URL." });
           this.sendTokenNotFoundMessageShown = true;
         }
 
-        this.sendTokenSymbolRef.nativeElement.textContent = "--";
+        this.sendTokenSymbolRef.nativeElement.textContent = "–";
 
         // Reset as not choosen
         this.tokenDecimalBalance = undefined;
@@ -209,11 +210,11 @@ export class SendComponent implements OnInit, AfterViewInit {
         else {
 
           if (!this.requestTokenNotFoundMessageShown) {
-            this.toasterService.addToaster({ color: "danger", message: "This request token is not found in this network. (look at the URL)" });
+            this.toasterService.addToaster({ color: "danger", message: "The asset selected for receiving could not be found in this network. Please check the URL." });
             this.requestTokenNotFoundMessageShown = true;
           }
 
-          this.requestTokenSymbolRef.nativeElement.textContent = "-";
+          this.requestTokenSymbolRef.nativeElement.textContent = "–";
         }
       }
     }
@@ -257,6 +258,11 @@ export class SendComponent implements OnInit, AfterViewInit {
     // Clean the form after sending
     if (!this.keepInputs.nativeElement.checked) {
       this.formRef.nativeElement.reset();
+
+	  this.sendTokenBalanceRef.nativeElement.textContent = "";
+	  this.sendTokenSymbolRef.nativeElement.textContent = "–";
+
+	  this.requestTokenSymbolRef.nativeElement.textContent = "–";
     }
   }
 

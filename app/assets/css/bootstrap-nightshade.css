@@ -5148,8 +5148,8 @@ fieldset:disabled .btn {
 }
 
 .card-title {
-	margin-bottom: 0.5rem;
-	margin-top: 0.2rem;
+	margin-bottom: 0.4rem;
+	margin-top: 0.5rem;
 }
 
 .card-subtitle {
@@ -5628,8 +5628,8 @@ fieldset:disabled .btn {
 }
 
 .alert-danger {
-	color: #842029;
-	background-color: #f8d7da;
+	color: #a73741d4;
+	background-color: #ffb7be;
 	border-color: #f5c2c7;
 }
 
@@ -13750,7 +13750,7 @@ html.dark .alert-warning .alert-link {
 
 html.dark .alert-danger {
 	color: #ee8277;
-	background-color: #74261e;
+	background-color: #74261e70;
 	border-color: #8b2e24;
 }
 
@@ -14466,6 +14466,11 @@ html.dark .bg-white {
 
 html.dark .bg-body {
 	background-color: rgba(var(--bs-body-rgb-alt), var(--bs-bg-opacity)) !important;
+}
+
+html body::selection {
+	color: #ff6400;
+	background-color: #333;
 }
 
 html.dark body::selection {

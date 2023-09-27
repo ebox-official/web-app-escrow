@@ -46,7 +46,7 @@
 @media (min-width: 768px) {
     :host {
         display: flex;
-        flex-direction: row;
+        flex-direction: row-reverse;
         justify-content: center;
         align-items: flex-start;
         gap: 1rem;
@@ -56,11 +56,12 @@
     .main-component-nav {
         display: flex;
         flex-direction: column;
-        align-items: flex-end;
+        align-items: flex-start;
         gap: .75rem;
         width: unset;
-        margin-left: -10rem; /* Hackfix to center the component */
+        margin-right: -7rem !important; /* Hackfix to center the component */
         box-shadow: none;
+		margin-top: 12px;
     }
 
     .main-component-nav a,

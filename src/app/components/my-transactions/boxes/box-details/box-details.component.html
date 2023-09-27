@@ -1,11 +1,12 @@
 <div class="custom-card-header card-header">
 	<div class="d-none d-md-block mb-3">
-		<h4 class="card-title">Transaction Details</h4>
+		<h4 class="card-title">{{ mode === "incoming" ? "Incoming" : "Outgoing" }} Transaction</h4>
 		<!-- <small class="card-text text-muted">
 			This is an ebox On-Chain Escrow transaction sent {{ mode === "incoming" ? "to" : "by" }} you.
 		</small> -->
 	</div>
-	<a style="font-weight: unset !important;" class="link-unstyled ms-auto ctrl-arrow-sx" [routerLink]="(typeOfBox === 'private') ? '../..' : '..'">
+	<a style="font-weight: unset !important;" class="link-unstyled ms-auto ctrl-arrow-sx"
+		[routerLink]="(typeOfBox === 'private') ? '../..' : '..'">
 		Back
 	</a>
 </div>
@@ -32,118 +33,14 @@
 				</div>
 			</div>
 
-			<!-- token icons -->
-			<div class="d-flex justify-content-evenly align-items-center" style="margin-top: 8px;">
-				<div style="width: 100px;" class="d-flex flex-column gap-2 align-items-center">
-					<div class="fw-bold" style="font-size: 20px;">{{
-						mode === "incoming" ?
-						box.status === COMPLETE ?
-						"Received" :
-						"Receiving" :
-						box.status === COMPLETE ?
-						"Sent" :
-						"Sending"
-						}}</div>
-					<img height="36" [src]="box.sendTokenInfo.thumb" [alt]="box.sendTokenInfo.symbol"
-						onerror="this.src='assets/img/unknown-icon.png'">
-					<div>
-						<!-- {{ box.sendValueDecimal | multiplierFormatter }} {{ box.sendTokenInfo.symbol }} -->
-						{{ box.sendValueDecimal | currencyFormatter }} {{ box.sendTokenInfo.symbol }}
-					</div>
-				</div>
-				<div class="fst-italic" *ngIf="box.mode === OTC_TRADE">for</div>
-				<div style="width: 100px;" class="d-flex flex-column gap-2 align-items-center"
-					*ngIf="box.mode === OTC_TRADE">
-					<div class="fw-bold" style="font-size: 20px;">{{
-						mode === "incoming" ?
-						box.status === COMPLETE ?
-						"Sent" :
-						"Sending" :
-						box.status === COMPLETE ?
-						"Received" :
-						"Receiving"
-						}}</div>
-					<img height="36" [src]="box.requestTokenInfo.thumb" [alt]="box.requestTokenInfo.symbol"
-						onerror="this.src='assets/img/unknown-icon.png'">
-					<div>{{ box.requestValueDecimal | multiplierFormatter }} {{ box.requestTokenInfo.symbol }}</div>
-				</div>
-			</div>
-			<!-- /token icons -->
-
 			<!-- status -->
 			<div style="margin-top: 6px;" class="fs-4 fw-bold text-center" [ngClass]="{
-                'text-primary': box.status === PENDING,
-                'text-muted': box.status === COMPLETE
-            }">
+							'text-primary': box.status === PENDING,
+							'text-muted': box.status === COMPLETE
+						}">
 				{{ box.status }}
 			</div>
 			<!-- /status -->
-
-			<!-- amount 1 -->
-			<!-- <div class="text-center">
-				<div>
-					<div class="fw-bold">
-						{{
-						mode === "incoming" ?
-						box.status === COMPLETE ?
-						"Received" :
-						"Receiving" :
-						box.status === COMPLETE ?
-						"Sent" :
-						"Sending"
-						}} exactly:
-					</div>
-					<div class="fs-4" style="margin-bottom: -8px;">
-						{{ box.sendValueDecimal | currencyFormatter }} {{ box.sendTokenInfo.symbol }}
-					</div>
-				</div>
-
-				<ng-container *ngIf="box.sendTokenInfo.isBase else nonBaseToken">
-					<span style="opacity: 0.7;">Base Currency</span>
-				</ng-container>
-				<ng-template #nonBaseToken>
-					<small>
-						<a [href]="netInfo.accountScannerUrl(box.sendTokenInfo.address)" target="_blank">
-							<i class="bi bi-box-arrow-up-right"></i>
-							{{ box.sendTokenInfo.address }}
-						</a>
-					</small>
-				</ng-template>
-			</div> -->
-			<!-- /amount -->
-
-			<!-- amount 2 -->
-			<!-- <div class="text-center" *ngIf="box.mode === OTC_TRADE">
-				<div>
-					<div class="fw-bold">
-						{{
-						mode === "incoming" ?
-						box.status === COMPLETE ?
-						"Sent" :
-						"Send" :
-						box.status === COMPLETE ?
-						"Received" :
-						"Receive"
-						}} exactly:
-					</div>
-					<div class="fs-4" style="margin-bottom: -8px;">
-						{{ box.requestValueDecimal | currencyFormatter }} {{ box.requestTokenInfo.symbol }}
-					</div>
-				</div>
-
-				<ng-container *ngIf="box.requestTokenInfo.isBase else nonBaseToken">
-					<span style="opacity: 0.7;">Base Currency</span>
-				</ng-container>
-				<ng-template #nonBaseToken>
-					<small>
-						<a [href]="netInfo.accountScannerUrl(box.requestTokenInfo.address)" target="_blank">
-							<i class="bi bi-box-arrow-up-right"></i>
-							{{ box.requestTokenInfo.address }}
-						</a>
-					</small>
-				</ng-template>
-			</div> -->
-			<!-- /amount 2 -->
 
 			<!-- sender|recipient -->
 			<div class="text-center" style="margin-top: 6px;">
@@ -167,15 +64,99 @@
 			</div>
 			<!-- /sender|recipient -->
 
+			<!-- token icons -->
+			<div class="d-flex justify-content-center align-items-center" style="margin-top: 12px;">
+				<div style="width: 100px;" class="d-flex flex-column gap-2 align-items-center">
+					<div class="fw-bold" style="font-size: 20px; margin-bottom: 2px;">{{
+						mode === "incoming" ?
+						box.status === COMPLETE ?
+						"Received" :
+						"Receiving" :
+						box.status === COMPLETE ?
+						"Sent" :
+						"Sending"
+						}}</div>
+					<img height="36" [src]="box.sendTokenInfo.thumb" [alt]="box.sendTokenInfo.symbol"
+						onerror="this.src='assets/img/unknown-icon.png'">
+					<div>
+						<!-- {{ box.sendValueDecimal | multiplierFormatter }} {{ box.sendTokenInfo.symbol }} -->
+						{{ box.sendValueDecimal | currencyFormatter }} {{ box.sendTokenInfo.symbol }}
+					</div>
+				</div>
+
+				<div class="fst-italic" *ngIf="box.mode === OTC_TRADE" style="padding: 0px 30px;">for</div>
+
+				<div style="width: 100px;" class="d-flex flex-column gap-2 align-items-center"
+					*ngIf="box.mode === OTC_TRADE">
+					<div class="fw-bold" style="font-size: 20px; margin-bottom: 2px;">{{
+						mode === "incoming" ?
+						box.status === COMPLETE ?
+						"Sent" :
+						"Sending" :
+						box.status === COMPLETE ?
+						"Received" :
+						"Receiving"
+						}}</div>
+					<img height="36" [src]="box.requestTokenInfo.thumb" [alt]="box.requestTokenInfo.symbol"
+						onerror="this.src='assets/img/unknown-icon.png'">
+					<div>
+						<!-- {{ box.requestValueDecimal | multiplierFormatter }} {{ box.requestTokenInfo.symbol }} -->
+						{{ box.requestValueDecimal | currencyFormatter }} {{ box.requestTokenInfo.symbol }}
+					</div>
+				</div>
+			</div>
+			<!-- /token icons -->
+
+			<!-- amount 1 -->
+			<div style="width: 98%; margin-left: auto; margin-right: auto; margin-top: 18px; text-align: center;">
+				<div>
+					<span class="fw-bold">{{ box.sendTokenInfo.symbol }}: </span>
+
+					<ng-container *ngIf="box.sendTokenInfo.isBase else nonBaseToken">
+						<span style="opacity: 0.7;">The chain currency has no contract address.</span>
+					</ng-container>
+					<ng-template #nonBaseToken>
+						<small>
+							<a [href]="netInfo.accountScannerUrl(box.sendTokenInfo.address)" target="_blank">{{
+								box.sendTokenInfo.address }} <i class="bi bi-box-arrow-up-right"></i></a>
+						</small>
+					</ng-template>
+				</div>
+			</div>
+			<!-- /amount -->
+
+			<!-- amount 2 -->
+			<div *ngIf="box.mode === OTC_TRADE"
+				style="width: 98%; margin-left: auto; margin-right: auto; margin-top: -14px; text-align: center;">
+				<div>
+					<span class="fw-bold">{{ box.requestTokenInfo.symbol }}: </span>
+
+					<ng-container *ngIf="box.requestTokenInfo.isBase else nonBaseToken">
+						<span style="opacity: 0.7;">The chain currency has no contract address.</span>
+					</ng-container>
+					<ng-template #nonBaseToken>
+						<small>
+							<a [href]="netInfo.accountScannerUrl(box.requestTokenInfo.address)" target="_blank">{{
+								box.requestTokenInfo.address }} <i class="bi bi-box-arrow-up-right"></i></a>
+						</small>
+					</ng-template>
+				</div>
+			</div>
+			<!-- /amount 2 -->
+
+
 			<!-- scammer alert -->
-			<div class="text-center" *ngIf="mode === 'incoming' && box.status === PENDING && box.mode === OTC_TRADE"
-				class="mb-0 alert alert-danger" role="alert">
-				Be aware of scammers!<br>Make sure to check the token addresses are correct.
+			<div *ngIf="mode === 'incoming' && box.status === PENDING && box.mode === OTC_TRADE"
+				class="mb-0 alert alert-danger" role="alert"
+				style="line-height: 1.65; width: 80%; margin-left: auto; margin-right: auto; margin-top: 8px; text-align: center;">
+				<i><b>Beware of scammers!</b> Make sure to check token addresses before accepting the trade.</i>
 			</div>
 			<!-- /scammer alert -->
 
+
 			<!-- interactions -->
-			<div class="text-center d-grid my-3" *ngIf="box.status === PENDING" style="margin-top: 6px;">
+			<div class="text-center d-grid my-3" *ngIf="box.status === PENDING"
+				style="margin-top: 20px !important; width: 98%; margin-left: auto; margin-right: auto;">
 
 				<!-- unbox -->
 				<ng-container *ngIf="mode === 'incoming'">
